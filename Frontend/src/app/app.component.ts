@@ -18,6 +18,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TextareaModule } from 'primeng/textarea';
 import { AutoFocus } from 'primeng/autofocus';
+import { MainChatComponent } from './chat-section/main-chat.component';
+import { UserInputComponent } from './chat-section/user-input/user-input.component';
 @Component({
   imports: [
     NxWelcomeComponent,
@@ -37,6 +39,8 @@ import { AutoFocus } from 'primeng/autofocus';
     FormsModule,
     TextareaModule,
     AutoFocus,
+    MainChatComponent,
+    UserInputComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-root',

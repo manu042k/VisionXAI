@@ -1,0 +1,22 @@
+<ng-container
+  *ngIf="{
+    placeholder: placeholder,
+} as cmpObj"
+>
+  <div class="flex flex-row justify-between w-full m-3">
+    <!-- Textarea -->
+    <textarea
+      class="w-[93%] border rounded-md p-2"
+      rows="4"
+      cols="30"
+      pTextarea
+      [pAutoFocus]="true"
+      placeholder="{{ cmpObj.placeholder }}"
+    ></textarea>
+
+    <!-- Button Wrapper for Center Alignment -->
+    <div class="flex items-center justify-center">
+      <p-button icon="pi pi-check"></p-button>
+    </div>
+  </div>
+</ng-container>

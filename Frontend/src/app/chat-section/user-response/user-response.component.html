@@ -1,0 +1,18 @@
+<ng-container
+  *ngIf="{
+    avatarTitle: avatarTitle,
+    userResponse: userResponse,
+  } as cmpObj"
+>
+  <p-fieldset class="w-full">
+    <ng-template #header>
+      <div class="w-full flex">
+        <i class="pi pi-user" pi-spin style="color: #708090"></i>
+        <span class="ml-2 font-bold">{{ cmpObj.avatarTitle }}</span>
+      </div>
+    </ng-template>
+    <p class="m-0">
+      {{ cmpObj.userResponse }}
+    </p>
+  </p-fieldset>
+</ng-container>

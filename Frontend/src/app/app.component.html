@@ -1,4 +1,4 @@
-<ng-container class="overflow-hidden h-screen">
+<ng-container class="h-screen">
   <p-menubar [model]="items">
     <ng-template #start>
       <img src="logo.svg" alt="" class="w-7 h-7 bg-white" />
@@ -12,76 +12,14 @@
     [minSizes]="[40, 40]"
     styleClass="mb-8"
   >
-    <ng-template pTemplate>
-      <div class="col flex items-center justify-center">Panel 1</div>
-    </ng-template>
+    <ng-template pTemplate> </ng-template>
     <ng-template pTemplate>
       <p-splitter layout="vertical" [panelSizes]="[80, 20]">
         <ng-template pTemplate>
-          <div style="flex-grow: 1" class="flex items-center justify-center">
-            <div class="flex flex-col h-full gap-4 w-full p-3 overflow-auto">
-              <!-- First Fieldset -->
-              <p-fieldset class="w-full">
-                <ng-template #header>
-                  <div class="w-full flex">
-                    <!-- <p-avatar
-                      image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-                      shape="circle"
-                    ></p-avatar> -->
-                    <i class="pi pi-user" pi-spin style="color: #708090"></i>
-
-                    <span class="ml-2 font-bold">User</span>
-                  </div>
-                </ng-template>
-                <p class="m-0">Lorem ipsum dolor sit amet...</p>
-              </p-fieldset>
-
-              <!-- Second Fieldset -->
-              <p-fieldset class="w-full">
-                <ng-template #header>
-                  <div class="w-full flex">
-                    <p-avatar image="logo.svg" shape="circle"></p-avatar>
-                    <span class="ml-2 font-bold">AnnotAIx</span>
-                  </div>
-                </ng-template>
-                <p class="m-0">
-                  Lorem ipsum dolor sit amet...Lorem ipsum dolor sit amet...
-                </p>
-              </p-fieldset>
-
-              <!-- Third Fieldset -->
-              <p-fieldset class="w-full">
-                <ng-template #header>
-                  <div class="w-full flex">
-                    <p-avatar
-                      class="pi-spin"
-                      image="logo.svg"
-                      shape="circle"
-                    ></p-avatar>
-                    <p-skeleton width="5rem" styleClass="mb-2" />
-                  </div>
-                </ng-template>
-                <p-skeleton height="2rem" styleClass="mb-2" />
-              </p-fieldset>
-            </div>
-          </div>
+          <app-main-chat class="w-full"></app-main-chat>
         </ng-template>
         <ng-template pTemplate>
-          <div class="flex flex-row justify-between w-full m-3">
-            <!-- Textarea -->
-            <textarea
-              class="w-[93%] border rounded-md p-2"
-              rows="4"
-              cols="30"
-              pTextarea
-              [pAutoFocus]="true"
-            ></textarea>
-
-            <!-- Button Wrapper for Center Alignment -->
-            <div class="flex items-center justify-center">
-              <p-button icon="pi pi-check"></p-button>
-            </div>
-          </div>
+          <app-user-input class="w-[95%]"></app-user-input>
         </ng-template>
       </p-splitter>
     </ng-template>
