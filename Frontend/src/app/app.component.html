@@ -12,7 +12,10 @@
     [minSizes]="[40, 40]"
     styleClass="mb-8"
   >
-    <ng-template pTemplate> </ng-template>
+    <ng-template pTemplate>
+      <!-- <app-photo-container class="w-full h-full"></app-photo-container> -->
+      <app-image-editor></app-image-editor>
+    </ng-template>
     <ng-template pTemplate>
       <p-splitter layout="vertical" [panelSizes]="[80, 20]">
         <ng-template pTemplate>

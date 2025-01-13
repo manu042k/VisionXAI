@@ -20,6 +20,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { AutoFocus } from 'primeng/autofocus';
 import { MainChatComponent } from './chat-section/main-chat.component';
 import { UserInputComponent } from './chat-section/user-input/user-input.component';
+import { PhotoContainerComponent } from './photo-annotation/photo-container.component';
+import { ImageEditorComponentI } from './test/ImageEditorComponent.component';
 @Component({
   imports: [
     NxWelcomeComponent,
@@ -41,6 +43,8 @@ import { UserInputComponent } from './chat-section/user-input/user-input.compone
     AutoFocus,
     MainChatComponent,
     UserInputComponent,
+    PhotoContainerComponent,
+    ImageEditorComponentI,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-root',

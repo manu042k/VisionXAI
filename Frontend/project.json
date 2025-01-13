@@ -23,7 +23,10 @@
             "input": "public"
           }
         ],
-        "styles": ["./src/styles.scss"],
+        "styles": [
+                  "./src/styles.scss",
+                  "node_modules/@pqina/pintura/pintura.css"
+      ],
         "scripts": []
       },
       "configurations": {
