@@ -1,38 +1,61 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Card } from 'primeng/card';
+import { Panel } from 'primeng/panel';
+import { FileUpload } from 'primeng/fileupload';
+import { ButtonModule } from 'primeng/button';
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface Polygon {
+  points: Point[];
+}
 
 @Component({
   selector: 'app-image-editor',
-  templateUrl: './ImageEditorComponent.component.html',
-  styleUrls: ['./ImageEditorComponent.component.scss'],
-  imports: [CommonModule],
+  templateUrl: './image-editor.component.html',
+  styleUrls: ['./image-editor.component.scss'],
+  imports: [CommonModule, Card, Panel, FileUpload, ButtonModule, NgIf],
   standalone: true,
 })
 export class ImageEditorComponentI implements OnInit {
-  @ViewChild('canvas', { static: true }) canvas?: ElementRef;
+  @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
   ctx?: CanvasRenderingContext2D;
   imageUrl: string = '';
   image?: HTMLImageElement;
-  points: number[][][] = [[]]; // Array of points for multiple polygons
-  activePolygon: number = 0;
-  undoStack: number[][][][] = [];
-  redoStack: number[][][][] = [];
+  polygons: Polygon[] = [];
+  activePolygonIndex: number = 0;
+  undoStack: Polygon[][] = [];
+  redoStack: Polygon[][] = [];
   isDrawingEnabled: boolean = false;
 
   ngOnInit(): void {
-    this.ctx = this.canvas?.nativeElement.getContext('2d');
+    this.ctx = this.canvas?.nativeElement.getContext('2d') ?? undefined;
+  }
+
+  triggerFileInput(): void {
+    this.fileInput?.nativeElement.click();
   }
 
   toggleDrawing(): void {
     this.isDrawingEnabled = !this.isDrawingEnabled;
   }
 
-  uploadImage(event: any): void {
-    const file = event.target.files[0];
+  uploadImage(event: Event): void {
+    if (this.image) {
+      this.reset(); // Reset the canvas before uploading a new image
+    }
+    const target = event.target as HTMLInputElement;
+    const file = target?.files?.[0];
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.imageUrl = e.target.result;
+      reader.onload = () => {
+        this.imageUrl = reader.result as string;
         this.image = new Image();
         this.image.src = this.imageUrl;
         this.image.onload = () => this.draw();
@@ -41,115 +64,99 @@ export class ImageEditorComponentI implements OnInit {
     }
   }
 
-  startDrawing(event: MouseEvent): void {
-    if (!this.image || !this.isDrawingEnabled) return;
+  handleCanvasClick(event: MouseEvent): void {
+    if (!this.isDrawingEnabled || !this.image) return;
 
-    const rect = this.canvas?.nativeElement.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const { offsetX: x, offsetY: y } = event;
+    const activePolygon =
+      this.polygons[this.activePolygonIndex] ?? this.createPolygon();
+    activePolygon.points.push({ x, y });
 
-    const points = this.points[this.activePolygon];
-    points.push([Math.round(x), Math.round(y)]);
-
+    this.pushUndoState();
     this.draw();
   }
 
-  stopDrawing(): void {
-    if (this.isDrawingEnabled) {
-      this.undoStack.push(
-        this.points.map((polygon) => polygon.map((point) => [...point]))
-      );
-      this.redoStack = [];
-    }
-  }
-
   draw(): void {
-    if (!this.image) return;
+    if (!this.ctx || !this.image) return;
 
-    // Clear the canvas
-    this.ctx?.clearRect(
-      0,
-      0,
-      this.canvas?.nativeElement.width,
-      this.canvas?.nativeElement.height
-    );
-
-    // Draw the image
-    this.ctx?.drawImage(
+    this.clearCanvas(); // Clear canvas before drawing
+    this.ctx.drawImage(
       this.image,
       0,
       0,
-      this.canvas?.nativeElement.width,
-      this.canvas?.nativeElement.height
+      this.canvas!.nativeElement.width,
+      this.canvas!.nativeElement.height
     );
 
-    // Draw polygons and vertices
-    this.points.forEach((polygon, idx) => {
-      if (polygon.length > 0) {
-        this.ctx?.beginPath();
-        this.ctx?.moveTo(polygon[0][0], polygon[0][1]);
-        for (let i = 1; i < polygon.length; i++) {
-          this.ctx?.lineTo(polygon[i][0], polygon[i][1]);
-        }
-        this.ctx?.closePath();
-        if (this.ctx) {
-          this.ctx.strokeStyle = this.getRandomColor(idx);
-          this.ctx.lineWidth = 2;
-          this.ctx?.stroke();
-        }
+    this.polygons.forEach((polygon, index) => this.drawPolygon(polygon, index));
+  }
 
-        // Draw hollow circles at vertices
-        polygon.forEach(([x, y]) => {
-          this.ctx?.beginPath();
-          this.ctx?.arc(x, y, 5, 0, 2 * Math.PI);
-          if (this.ctx) {
-            this.ctx.strokeStyle = this.getRandomColor(idx);
-          }
-          this.ctx?.stroke();
-        });
-      }
+  private drawPolygon(polygon: Polygon, index: number): void {
+    const ctx = this.ctx!;
+    if (polygon.points.length === 0) return;
+
+    ctx.beginPath();
+    ctx.moveTo(polygon.points[0].x, polygon.points[0].y);
+    polygon.points.forEach((point) => ctx.lineTo(point.x, point.y));
+    ctx.closePath();
+
+    ctx.strokeStyle = this.getRandomColor(index);
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    polygon.points.forEach((point) => {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+      ctx.stroke();
     });
   }
 
   getAnnotatedImage(): string | void {
-    if (this.canvas) {
-      console.log(this.canvas.nativeElement.toDataURL('image/png'));
-      return this.canvas.nativeElement.toDataURL('image/png');
-    }
+    return this.canvas?.nativeElement.toDataURL('image/png');
   }
 
   undo(): void {
     if (this.undoStack.length > 0) {
-      const lastState = this.undoStack.pop();
-      if (lastState) {
-        this.redoStack.push(
-          this.points.map((polygon) => polygon.map((point) => [...point]))
-        );
-        this.points = lastState;
-        this.draw();
-      }
+      this.pushRedoState(); // Save current state to redoStack
+      this.polygons = this.undoStack.pop()!; // Restore the last state
+      this.draw();
     }
   }
 
   redo(): void {
     if (this.redoStack.length > 0) {
-      const lastState = this.redoStack.pop();
-      if (lastState) {
-        this.undoStack.push(this.points.map((polygon) => [...polygon]));
-        this.points = lastState;
-        this.draw();
-      }
+      this.pushUndoState(); // Save current state to undoStack
+      this.polygons = this.redoStack.pop()!; // Restore the next state
+      this.draw();
     }
   }
 
   reset(): void {
-    this.points = [[]];
+    this.pushUndoState(); // Save current state for undo
+    this.polygons = [];
     this.undoStack = [];
     this.redoStack = [];
-    this.draw();
+    this.image = undefined; // Clear the image
+
+    this.clearCanvas();
   }
 
-  private getRandomColor(idx: number): string {
+  private pushUndoState(): void {
+    this.undoStack.push(JSON.parse(JSON.stringify(this.polygons)));
+  }
+
+  private pushRedoState(): void {
+    this.redoStack.push(JSON.parse(JSON.stringify(this.polygons)));
+  }
+
+  private createPolygon(): Polygon {
+    const newPolygon = { points: [] };
+    this.polygons.push(newPolygon);
+    this.activePolygonIndex = this.polygons.length - 1;
+    return newPolygon;
+  }
+
+  private getRandomColor(index: number): string {
     const colors = [
       '#FF5733',
       '#33FF57',
@@ -158,6 +165,13 @@ export class ImageEditorComponentI implements OnInit {
       '#57FF33',
       '#FF9A33',
     ];
-    return colors[idx % colors.length];
+    return colors[index % colors.length];
+  }
+
+  private clearCanvas(): void {
+    const canvas = this.canvas!.nativeElement;
+    if (this.ctx) {
+      this.ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
+    }
   }
 }
