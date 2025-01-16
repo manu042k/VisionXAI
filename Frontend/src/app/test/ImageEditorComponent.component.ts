@@ -52,6 +52,7 @@ export class ImageEditorComponentI implements OnInit {
     }
     const target = event.target as HTMLInputElement;
     const file = target?.files?.[0];
+    console.log('fiel', file);
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -61,6 +62,7 @@ export class ImageEditorComponentI implements OnInit {
         this.image.onload = () => this.draw();
       };
       reader.readAsDataURL(file);
+      target.value = '';
     }
   }
 
@@ -136,7 +138,8 @@ export class ImageEditorComponentI implements OnInit {
     this.polygons = [];
     this.undoStack = [];
     this.redoStack = [];
-    this.image = undefined; // Clear the image
+    this.image = undefined;
+    this.imageUrl = ''; // Clear the image
 
     this.clearCanvas();
   }
@@ -157,6 +160,7 @@ export class ImageEditorComponentI implements OnInit {
   }
 
   private getRandomColor(index: number): string {
+    //todo: add multi color support
     const colors = [
       '#FF5733',
       '#33FF57',

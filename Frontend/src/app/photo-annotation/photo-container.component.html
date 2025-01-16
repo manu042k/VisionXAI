@@ -1,61 +1,88 @@
 <ng-container>
   <div class="flex flex-col gap-4 m-8">
-    <!-- Panel with bounded image -->
+    <!-- Panel for Image Editor -->
     <p-panel
       [style]="{ height: '35rem', border: '1px dashed #FFFF' }"
       class="relative overflow-hidden"
     >
-      <ng-container *ngIf="imageUrl; else watermark">
-        <img
-          #canvas
-          [src]="imageUrl"
-          class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none"
-        />
-      </ng-container>
-
-      <ng-template #watermark>
-        <div class="relative w-full h-full">
-          <i
-            class="pi pi-upload absolute top-10 w-full h-full opacity-30"
-            style="font-size: 20rem; left: 10rem"
-          ></i>
-        </div>
-      </ng-template>
+      <!-- Placeholder Icon for Empty Canvas -->
+      <div class="relative w-full h-full" *ngIf="!image">
+        <i
+          class="pi pi-upload absolute top-10 w-full h-full opacity-30"
+          style="font-size: 20rem; left: 10rem"
+        ></i>
+      </div>
+      <!-- Canvas for Drawing -->
+      <canvas
+        #canvas
+        class="absolute"
+        width="620"
+        height="480"
+        (click)="handleCanvasClick($event)"
+      ></canvas>
     </p-panel>
 
-    <!-- Buttons Section -->
-    <div class="flex flex-row gap-4 justify-center items-center">
+    <!-- Action Buttons -->
+    <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+      <!-- Upload Image -->
       <p-button
         label="Upload"
         variant="outlined"
         icon="pi pi-upload"
         size="small"
-        severity="contrast"
+        severity="success"
         (onClick)="triggerFileInput()"
       ></p-button>
-
-      <!-- Hidden file input -->
       <input
         #fileInput
         type="file"
-        accept="image/*"
-        (change)="onFileSelected($event)"
+        accept="image/jpeg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/HEIC"
+        (change)="uploadImage($event)"
         style="display: none"
       />
+
+      <!-- Toggle Drawing -->
       <p-button
-        label="Annotate"
+        variant="outlined"
         icon="pi pi-pencil"
         size="small"
-        variant="outlined"
-        severity="contrast"
+        [severity]="!image ? 'contrast' : 'info'"
+        (onClick)="toggleDrawing()"
+        [label]="isDrawingEnabled ? 'Stop Drawing' : 'Start Drawing'"
+        [disabled]="!image"
       ></p-button>
+
+      <!-- Undo Action -->
       <p-button
-        label="Clear"
-        icon="pi pi-times"
-        size="small"
-        (onClick)="onFileClear()"
         variant="outlined"
-        severity="contrast"
+        icon="pi pi-undo"
+        size="small"
+        [severity]="undoStack.length === 0 ? 'contrast' : 'help'"
+        (onClick)="undo()"
+        label="Undo"
+        [disabled]="undoStack.length === 0 && !this.polygons.length"
+      ></p-button>
+
+      <!-- Redo Action -->
+      <p-button
+        variant="outlined"
+        icon="pi pi-refresh"
+        size="small"
+        [severity]="redoStack.length === 0 ? 'contrast' : 'help'"
+        (onClick)="redo()"
+        label="Redo"
+        [disabled]="redoStack.length === 0"
+      ></p-button>
+
+      <!-- Reset Canvas -->
+      <p-button
+        variant="outlined"
+        icon="pi  pi-times"
+        size="small"
+        [severity]="image ? 'danger' : 'contrast'"
+        (onClick)="reset()"
+        label="Reset"
+        [disabled]="!image"
       ></p-button>
     </div>
   </div>
