@@ -15,7 +15,8 @@ import { Scroller } from 'primeng/scroller';
   styleUrl: './main-chat.component.scss',
 })
 export class MainChatComponent {
-  isLoading: boolean = true;
+  isLoading: boolean = false;
+  message = 'testing';
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   ngAfterViewInit(): void {
     // Ensure the scrollbar is at the bottom after initial load

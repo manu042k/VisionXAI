@@ -3,7 +3,10 @@
     #scrollContainer
     class="flex flex-col h-full gap-4 w-full p-3 overflow-y-auto max-h-[65vh]"
   >
-    <app-llm-response [setLoading]="isLoading"></app-llm-response>
+    <app-llm-response
+      [llmResponse]="message"
+      [setLoading]="isLoading"
+    ></app-llm-response>
     <app-user-response></app-user-response>
     <app-llm-response [setLoading]="isLoading"></app-llm-response>
     <app-user-response></app-user-response>
