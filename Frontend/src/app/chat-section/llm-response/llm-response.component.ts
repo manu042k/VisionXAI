@@ -13,5 +13,5 @@ import { Skeleton } from 'primeng/skeleton';
 export class LlmResponseComponent {
   @Input() llmResponse: string = '';
   @Input() setLoading?: boolean;
-  public avatarTitle: string = 'Answer';
+  public avatarTitle: string = 'AiX';
 }

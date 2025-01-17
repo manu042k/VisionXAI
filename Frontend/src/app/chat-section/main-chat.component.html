@@ -2,19 +2,18 @@
   <div
     #scrollContainer
     class="flex flex-col h-full gap-4 w-full p-3 overflow-y-auto max-h-[65vh]"
+    (scroll)="onScroll()"
   >
-    <app-llm-response
-      [llmResponse]="message"
-      [setLoading]="isLoading"
-    ></app-llm-response>
-    <app-user-response></app-user-response>
-    <app-llm-response [setLoading]="isLoading"></app-llm-response>
-    <app-user-response></app-user-response>
-    <app-llm-response [setLoading]="isLoading"></app-llm-response>
-    <app-user-response></app-user-response>
-    <app-llm-response [setLoading]="isLoading"></app-llm-response>
-    <app-user-response></app-user-response>
-    <app-llm-response [setLoading]="isLoading"></app-llm-response>
-    <app-user-response></app-user-response>
+    <ng-container *ngFor="let message of messages$ | async">
+      <ng-container *ngIf="message.sender === 'LLM'">
+        <app-llm-response
+          [llmResponse]="message.content"
+          [setLoading]="message.loading"
+        ></app-llm-response>
+      </ng-container>
+      <ng-container *ngIf="message.sender === 'User'">
+        <app-user-response [userResponse]="message.content"></app-user-response>
+      </ng-container>
+    </ng-container>
   </div>
 </div>

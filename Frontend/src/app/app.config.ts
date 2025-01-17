@@ -16,16 +16,18 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { modalReducer } from './+state/api-modal/apiModal.Reducer';
+import { modalReducer } from './+state/api-modal/apiModal.reducer';
+import { chatReducer } from './+state/chat-messages/message.reducers';
+import { ChatEffects } from './+state/chat-messages/message.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStore({
       modal: modalReducer,
+      chat: chatReducer,
     }),
     provideStoreDevtools({ logOnly: !isDevMode() }),
-    provideEffects(),
-    provideEffects(),
+    provideEffects([]),
     provideClientHydration(withEventReplay()),
     provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true }),
