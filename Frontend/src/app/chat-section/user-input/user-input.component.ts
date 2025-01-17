@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
@@ -20,21 +20,21 @@ import { FormsModule } from '@angular/forms';
 })
 export class UserInputComponent {
   public placeholder: string = 'Start typing...';
-  userMessage: MessageState = {
+  public userMessage: MessageState = {
     content: '',
     sender: MESSAGETYPE.USER,
     loading: false,
   };
-  constructor(private store: Store<ChatState>) {}
+  private store = inject(Store);
 
-  onInputChange(event: Event): void {
+  public onInputChange(event: Event): void {
     const newContent = (event.target as HTMLInputElement).value.toString();
     this.userMessage = {
       ...this.userMessage,
       content: newContent,
     };
   }
-  onSendMessage(): void {
+  public onSendMessage(): void {
     this.store.dispatch(addMessage({ message: this.userMessage }));
     this.userMessage = {
       ...this.userMessage,

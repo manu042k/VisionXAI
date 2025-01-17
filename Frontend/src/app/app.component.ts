@@ -18,8 +18,6 @@ import { ButtonModule } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { SystemSettingsComponent } from './settings/system-settings.component';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { selectVisible } from './+state/api-modal/apiModal.selectors';
 import { showModal } from './+state/api-modal/apiModal.actions';
 @Component({
   imports: [
@@ -42,17 +40,15 @@ import { showModal } from './+state/api-modal/apiModal.actions';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  public value: string = '';
-  items: MenuItem[] | undefined;
+  public items: MenuItem[] | undefined;
 
-  constructor(private primeng: PrimeNG, private store: Store) {}
+  private store = inject(Store);
 
   ngOnInit() {
     this.items = [];
   }
 
-  showDialog() {
-    console.log('show dialog');
+  public showDialog() {
     this.store.dispatch(showModal());
   }
 }

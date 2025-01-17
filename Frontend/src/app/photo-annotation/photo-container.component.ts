@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
-import { Card } from 'primeng/card';
 import { Panel } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 interface Point {
@@ -14,7 +13,7 @@ interface Polygon {
 
 @Component({
   selector: 'app-photo-container',
-  imports: [CommonModule, Card, Panel, ButtonModule, NgIf],
+  imports: [CommonModule, Panel, ButtonModule, NgIf],
   templateUrl: './photo-container.component.html',
   styleUrl: './photo-container.component.scss',
 })
@@ -22,28 +21,28 @@ export class PhotoContainerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  ctx?: CanvasRenderingContext2D;
-  imageUrl: string = '';
-  image?: HTMLImageElement;
-  polygons: Polygon[] = [];
-  activePolygonIndex: number = 0;
-  undoStack: Polygon[][] = [];
-  redoStack: Polygon[][] = [];
-  isDrawingEnabled: boolean = false;
+  public ctx?: CanvasRenderingContext2D;
+  public imageUrl: string = '';
+  public image?: HTMLImageElement;
+  public polygons: Polygon[] = [];
+  public activePolygonIndex: number = 0;
+  public undoStack: Polygon[][] = [];
+  public redoStack: Polygon[][] = [];
+  public isDrawingEnabled: boolean = false;
 
   ngOnInit(): void {
     this.ctx = this.canvas?.nativeElement.getContext('2d') ?? undefined;
   }
 
-  triggerFileInput(): void {
+  public triggerFileInput(): void {
     this.fileInput?.nativeElement.click();
   }
 
-  toggleDrawing(): void {
+  public toggleDrawing(): void {
     this.isDrawingEnabled = !this.isDrawingEnabled;
   }
 
-  uploadImage(event: Event): void {
+  public uploadImage(event: Event): void {
     if (this.image) {
       this.reset(); // Reset the canvas before uploading a new image
     }
@@ -63,7 +62,7 @@ export class PhotoContainerComponent implements OnInit {
     }
   }
 
-  handleCanvasClick(event: MouseEvent): void {
+  public handleCanvasClick(event: MouseEvent): void {
     if (!this.isDrawingEnabled || !this.image) return;
 
     const { offsetX: x, offsetY: y } = event;
@@ -75,7 +74,7 @@ export class PhotoContainerComponent implements OnInit {
     this.draw();
   }
 
-  draw(): void {
+  public draw(): void {
     if (!this.ctx || !this.image) return;
 
     this.clearCanvas(); // Clear canvas before drawing
@@ -110,11 +109,11 @@ export class PhotoContainerComponent implements OnInit {
     });
   }
 
-  getAnnotatedImage(): string | void {
+  public getAnnotatedImage(): string | void {
     return this.canvas?.nativeElement.toDataURL('image/png');
   }
 
-  undo(): void {
+  public undo(): void {
     if (this.undoStack.length > 0) {
       this.pushRedoState(); // Save current state to redoStack
       this.polygons = this.undoStack.pop()!; // Restore the last state
@@ -122,7 +121,7 @@ export class PhotoContainerComponent implements OnInit {
     }
   }
 
-  redo(): void {
+  public redo(): void {
     if (this.redoStack.length > 0) {
       this.pushUndoState(); // Save current state to undoStack
       this.polygons = this.redoStack.pop()!; // Restore the next state
@@ -130,7 +129,7 @@ export class PhotoContainerComponent implements OnInit {
     }
   }
 
-  reset(): void {
+  public reset(): void {
     this.pushUndoState(); // Save current state for undo
     this.polygons = [];
     this.undoStack = [];

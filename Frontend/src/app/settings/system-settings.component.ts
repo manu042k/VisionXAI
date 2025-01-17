@@ -21,20 +21,23 @@ import {
 })
 export class SystemSettingsComponent {
   private store = inject(Store);
-  visible$: Observable<boolean> = this.store.select(selectVisible);
-  apiModal$: Observable<{ key: string }> = this.store.select(selectApiModal);
+  public visible$: Observable<boolean> = this.store.select(selectVisible);
+  public apiModal$: Observable<{ key: string }> =
+    this.store.select(selectApiModal);
+  public apiModalKey: string = '';
 
-  apiModal = { key: '' };
-  onHide() {
+  public onHide(): void {
     this.store.dispatch(hideModal());
   }
 
-  onKeyChange(key: string) {
-    this.store.dispatch(updateApiModal({ key }));
+  public onInputChange(event: Event): void {
+    console.log('event', (event.target as HTMLInputElement).value);
+    const key = (event.target as HTMLInputElement).value;
+    this.apiModalKey = key;
   }
 
-  onSave() {
-    this.store.dispatch(updateApiModal({ key: this.apiModal.key }));
+  public onSave(): void {
+    this.store.dispatch(updateApiModal({ key: this.apiModalKey }));
     this.store.dispatch(hideModal());
   }
 }

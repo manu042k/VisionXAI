@@ -9,11 +9,19 @@
     [modal]="true"
     [(visible)]="cmpObj.isVisible"
     [style]="{ width: '25rem' }"
+    (onHide)="onHide()"
   >
     <span class="p-text-secondary block mb-8"></span>
     <div class="flex items-center gap-4 mb-4">
       <label for="API" class="font w-24">API:</label>
-      <input pInputText id="API" class="flex-auto"  autocomplete="off" />
+      <input
+        pInputText
+        id="API"
+        class="flex-auto"
+        autocomplete="off"
+        [value]="cmpObj.apiKey?.key"
+        (input)="onInputChange($event)"
+      />
     </div>
 
     <div class="flex justify-end gap-2">

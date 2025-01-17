@@ -4,8 +4,9 @@ import {
   ViewChild,
   AfterViewChecked,
   OnInit,
+  inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { LlmResponseComponent } from './llm-response/llm-response.component';
 import { UserResponseComponent } from './user-response/user-response.component';
 import { Scroller } from 'primeng/scroller';
@@ -16,7 +17,7 @@ import {
   selectLoading,
   selectMessages,
 } from '../+state/chat-messages/message.selectors';
-
+import { ProgressSpinner } from 'primeng/progressspinner';
 @Component({
   selector: 'app-main-chat',
   imports: [
@@ -24,44 +25,39 @@ import {
     LlmResponseComponent,
     UserResponseComponent,
     Scroller,
+    NgIf,
+    ProgressSpinner,
   ],
   templateUrl: './main-chat.component.html',
   styleUrls: ['./main-chat.component.scss'],
 })
 export class MainChatComponent implements AfterViewChecked, OnInit {
-  isLoading: boolean = false;
-  message = 'testing';
-  messages$: Observable<MessageState[]>;
-  loading$: Observable<boolean>;
+  private store = inject(Store);
+
+  public messages$ = this.store.select(selectMessages);
+  public loading$ = this.store.select(selectLoading);
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  isAtBottom: boolean = true; // Track if the user is at the bottom
+  public isAtBottom: boolean = true;
 
-  constructor(private store: Store<ChatState>) {
-    this.messages$ = this.store.select(selectMessages);
-    this.loading$ = this.store.select(selectLoading);
-  }
-
-  ngOnInit() {
-    // Reset the isAtBottom flag when component initializes
+  ngOnInit(): void {
     this.isAtBottom = true;
   }
 
   ngAfterViewChecked(): void {
     if (this.isAtBottom) {
-      // Only scroll to the bottom if the user is at the bottom
       this.scrollToBottom();
     }
   }
 
-  onScroll(): void {
+  public onScroll(): void {
     const element = this.scrollContainer.nativeElement;
     const isBottom =
       element.scrollHeight === element.scrollTop + element.clientHeight;
-    this.isAtBottom = isBottom; // Check if the user is at the bottom of the container
+    this.isAtBottom = isBottom;
   }
 
-  scrollToBottom(): void {
+  public scrollToBottom(): void {
     if (this.scrollContainer) {
       const element = this.scrollContainer.nativeElement;
       element.scrollTop = element.scrollHeight;
