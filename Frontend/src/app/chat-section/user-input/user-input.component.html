@@ -1,0 +1,29 @@
+<ng-container
+  *ngIf="{
+    placeholder: placeholder,
+    userMessage: userMessage,
+} as cmpObj"
+>
+  <div class="flex flex-row justify-between w-full m-3">
+    <!-- Textarea -->
+    <textarea
+      class="w-[93%] border rounded-md p-2"
+      rows="4"
+      cols="30"
+      pTextarea
+      [pAutoFocus]="true"
+      placeholder="{{ cmpObj.placeholder }}"
+      (input)="onInputChange($event)"
+      value="{{ cmpObj.userMessage.content }}"
+    ></textarea>
+
+    <!-- Button Wrapper for Center Alignment -->
+    <div class="flex items-center justify-center">
+      <p-button
+        (click)="onSendMessage()"
+        icon="pi pi-check"
+        [disabled]="cmpObj.userMessage.content === ''"
+      ></p-button>
+    </div>
+  </div>
+</ng-container>

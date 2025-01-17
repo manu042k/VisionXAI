@@ -1,0 +1,37 @@
+<ng-container
+  *ngIf="{
+    isVisible: (visible$ | async) || false,
+    apiKey: apiModal$ | async,
+  } as cmpObj"
+>
+  <p-dialog
+    header="Add Groq API"
+    [modal]="true"
+    [(visible)]="cmpObj.isVisible"
+    [style]="{ width: '25rem' }"
+    (onHide)="onHide()"
+  >
+    <span class="p-text-secondary block mb-8"></span>
+    <div class="flex items-center gap-4 mb-4">
+      <label for="API" class="font w-24">API:</label>
+      <input
+        pInputText
+        id="API"
+        class="flex-auto"
+        autocomplete="off"
+        [value]="cmpObj.apiKey?.key"
+        (input)="onInputChange($event)"
+      />
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <p-button
+        size="small"
+        label="Cancel"
+        severity="secondary"
+        (click)="onHide()"
+      />
+      <p-button size="small" label="Save" (click)="onSave()" />
+    </div>
+  </p-dialog>
+</ng-container>

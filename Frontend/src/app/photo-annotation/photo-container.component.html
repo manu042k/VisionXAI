@@ -1,0 +1,89 @@
+<ng-container>
+  <div class="flex flex-col gap-4 m-8">
+    <!-- Panel for Image Editor -->
+    <p-panel
+      [style]="{ height: '35rem', border: '1px dashed #FFFF' }"
+      class="relative overflow-hidden"
+    >
+      <!-- Placeholder Icon for Empty Canvas -->
+      <div class="relative w-full h-full" *ngIf="!image">
+        <i
+          class="pi pi-upload absolute top-10 w-full h-full opacity-30"
+          style="font-size: 20rem; left: 10rem"
+        ></i>
+      </div>
+      <!-- Canvas for Drawing -->
+      <canvas
+        #canvas
+        class="absolute"
+        width="620"
+        height="480"
+        (click)="handleCanvasClick($event)"
+      ></canvas>
+    </p-panel>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+      <!-- Upload Image -->
+      <p-button
+        label="Upload"
+        variant="outlined"
+        icon="pi pi-upload"
+        size="small"
+        severity="success"
+        (onClick)="triggerFileInput()"
+      ></p-button>
+      <input
+        #fileInput
+        type="file"
+        accept="image/jpeg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/HEIC"
+        (change)="uploadImage($event)"
+        style="display: none"
+      />
+
+      <!-- Toggle Drawing -->
+      <p-button
+        variant="outlined"
+        icon="pi pi-pencil"
+        size="small"
+        [severity]="!image ? 'contrast' : 'info'"
+        (onClick)="toggleDrawing()"
+        [label]="isDrawingEnabled ? 'Stop Drawing' : 'Start Drawing'"
+        [disabled]="!image"
+      ></p-button>
+
+      <!-- Undo Action -->
+      <p-button
+        variant="outlined"
+        icon="pi pi-undo"
+        size="small"
+        [severity]="undoStack.length === 0 ? 'contrast' : 'help'"
+        (onClick)="undo()"
+        label="Undo"
+        [disabled]="undoStack.length === 0 && !this.polygons.length"
+      ></p-button>
+
+      <!-- Redo Action -->
+      <p-button
+        variant="outlined"
+        icon="pi pi-refresh"
+        size="small"
+        [severity]="redoStack.length === 0 ? 'contrast' : 'help'"
+        (onClick)="redo()"
+        label="Redo"
+        [disabled]="redoStack.length === 0"
+      ></p-button>
+
+      <!-- Reset Canvas -->
+      <p-button
+        variant="outlined"
+        icon="pi  pi-times"
+        size="small"
+        [severity]="image ? 'danger' : 'contrast'"
+        (onClick)="reset()"
+        label="Reset"
+        [disabled]="!image"
+      ></p-button>
+    </div>
+  </div>
+</ng-container>
