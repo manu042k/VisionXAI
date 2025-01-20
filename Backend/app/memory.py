@@ -3,19 +3,13 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.memory import ConversationBufferMemory
 import os
+from app.config import load_environment
 from dotenv import load_dotenv
 from uuid import uuid4
-
-# Load environment variables
-
 
 class ImageChatBot:
     def __init__(self, model_name="llama-3.2-11b-vision-preview"):
         """Initialize the chatbot with environment variables and model."""
-        load_dotenv()
-        os.environ["LANGSMITH_TRACING"] = "false"
-        os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
-        os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
         self.model = ChatGroq(model=model_name)
         self.messages = []
 
@@ -34,7 +28,7 @@ class ImageChatBot:
                 [
                     {
                         "type": "image_url",
-                        "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
+                        "image_url": {"url": f"{base64_image}"},
                     }
                 ],
             ),
@@ -44,7 +38,6 @@ class ImageChatBot:
 
     def get_response(self, query, base64_image):
         """Generate a response for the given query and image."""
-        # base64_image = self.encode_image("/Users/manu042k/Documents/AnnotAIx/LLM/download.png")
         prompt = self.create_prompt(query, base64_image)
         chain = prompt | self.model
 
@@ -55,7 +48,7 @@ class ImageChatBot:
 
     def stream_response(self, query, base64_image):
         """Stream the response for the given query and image."""
-        # base64_image = self.encode_image(image_path)
+        #todo: i plment websockets here
         prompt = self.create_prompt(query, base64_image)
         chain = prompt | self.model
 

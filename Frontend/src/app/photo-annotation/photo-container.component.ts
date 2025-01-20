@@ -10,7 +10,7 @@ import { Panel } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 import { Store } from '@ngrx/store';
 import { addImage, clearImage } from '../+state/image/image.action';
-import { ImageState } from '../+state/image/image.state';
+
 interface Point {
   x: number;
   y: number;
@@ -120,26 +120,13 @@ export class PhotoContainerComponent implements OnInit {
   }
 
   public getAnnotatedImage() {
-    const canvas = this.canvas?.nativeElement as HTMLCanvasElement;
-
-    if (!canvas) {
-      console.error('Canvas element not found');
-      return;
-    }
-
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const imageFile: File = new File([blob], 'annotated-image.png', {
-          type: 'image/png',
-        });
-
-        // Dispatch the file to the store
-        this.store.dispatch(addImage({ image: { imageFile } }));
-      } else {
-        console.error('Failed to convert canvas to a blob');
-      }
-    }, 'image/png');
+    this.store.dispatch(
+      addImage({
+        image: this.canvas?.nativeElement.toDataURL('image/jpeg') ?? '',
+      })
+    );
   }
+
   public undo(): void {
     if (this.undoStack.length > 0) {
       this.pushRedoState(); // Save current state to redoStack

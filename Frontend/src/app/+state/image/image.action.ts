@@ -3,7 +3,7 @@ import { ImageState } from './image.state';
 
 export const addImage = createAction(
   '[Image] Add Image',
-  props<{ image: ImageState }>()
+  props<{ image: string }>()
 );
 
 export const clearImage = createAction('[Image] Clear Image');

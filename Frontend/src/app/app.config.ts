@@ -18,7 +18,6 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { modalReducer } from './+state/api-modal/apiModal.reducer';
 import { chatReducer } from './+state/chat-messages/message.reducers';
-import { ChatEffects } from './+state/chat-messages/message.effects';
 import { BASE_API_URL, configFactory } from './environment';
 import { imageReducer } from './+state/image/image.reducers';
 

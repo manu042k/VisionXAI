@@ -1,4 +1,4 @@
 export interface LLMInput {
   query: string;
-  fileImage: File | null;
+  base64Image: string;
 }

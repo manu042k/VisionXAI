@@ -1,10 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from app.models import ImageRequest
 from app.config import load_environment
 from app.memory import ImageChatBot
 import base64
-# Load environment variables
-load_environment()
 from fastapi import FastAPI, File, UploadFile,Form
 from pydantic import BaseModel
 
@@ -14,6 +13,8 @@ origins = [
     "*",  
 ]
 
+# Load environment variables
+load_environment()
 # Add CORSMiddleware to your app
 app.add_middleware(
     CORSMiddleware,
@@ -26,21 +27,11 @@ app.add_middleware(
 
 
 @app.post("/chat/")
-async def chat(text: str = Form(...), file: UploadFile = File(...)):
+async def chat(request:ImageRequest):
     """Process chat request with image and query."""
-    
-    async def encode_image(image_file: UploadFile):
-        """Encode an image to a base64 string."""
-        image_bytes = await image_file.read()
-        return base64.b64encode(image_bytes).decode("utf-8")
-    
     try:
-        chat = ImageChatBot()
-        
-        image_base64 = await encode_image(file)
-        
-        response = chat.get_response(text, image_base64)
-        
+        chat = ImageChatBot()    
+        response = chat.get_response(request.query, request.base64Image)
         return {"response": response}
     
     except Exception as e:

@@ -1,3 +1,4 @@
 export interface ImageState {
-  imageFile: File | null;
+  base64Image: string;
 }
+ 

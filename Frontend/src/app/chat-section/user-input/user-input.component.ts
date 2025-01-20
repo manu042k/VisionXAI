@@ -4,7 +4,6 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { AutoFocus } from 'primeng/autofocus';
 import {
-  ChatState,
   MessageState,
   MESSAGETYPE,
 } from 'src/app/+state/chat-messages/message.state';
@@ -32,7 +31,10 @@ export class UserInputComponent implements OnDestroy {
   };
   private store = inject(Store);
   private llmservices = inject(LlmService);
-  public fileImage$ = this.store.select(selectImage);
+  private query: LLMInput = {
+    query: '',
+    base64Image: '',
+  };
 
   // Subject to manage unsubscription
   private destroy$ = new Subject<void>();
@@ -47,33 +49,31 @@ export class UserInputComponent implements OnDestroy {
 
   public onSendMessage(): void {
     this.store.dispatch(addMessage({ message: this.userMessage }));
-
-    // Use takeUntil to manage subscription cleanup
-    this.fileImage$
-      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe when the component is destroyed
-      .subscribe((fileImage) => {
-        const query: LLMInput = {
+    this.store
+      .select(selectImage)
+      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
+      .subscribe((value) => {
+        this.query = {
           query: this.userMessage.content,
-          fileImage: fileImage,
+          base64Image: value,
         };
-        this.llmservices
-          .chatWithLLM(query)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((response) => {
-            console.log(response);
-            this.store.dispatch(
-              addMessage({
-                message: {
-                  content: response.response,
-                  sender: MESSAGETYPE.BOT,
-                  loading: false,
-                },
-              })
-            );
-          });
-        // Use the query object as needed here
       });
 
+    this.llmservices
+      .chatWithLLM(this.query)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        console.log(response);
+        this.store.dispatch(
+          addMessage({
+            message: {
+              content: response.response,
+              sender: MESSAGETYPE.BOT,
+              loading: false,
+            },
+          })
+        );
+      });
     this.userMessage = {
       ...this.userMessage,
       content: '',
