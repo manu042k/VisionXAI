@@ -19,12 +19,15 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { modalReducer } from './+state/api-modal/apiModal.reducer';
 import { chatReducer } from './+state/chat-messages/message.reducers';
 import { ChatEffects } from './+state/chat-messages/message.effects';
+import { BASE_API_URL, configFactory } from './environment';
+import { imageReducer } from './+state/image/image.reducers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStore({
       modal: modalReducer,
       chat: chatReducer,
+      image: imageReducer,
     }),
     provideStoreDevtools({ logOnly: !isDevMode() }),
     provideEffects([]),
@@ -38,5 +41,9 @@ export const appConfig: ApplicationConfig = {
         preset: MyPreset,
       },
     }),
+    {
+      provide: BASE_API_URL,
+      useFactory: configFactory, // Dynamically determine the URL
+    },
   ],
 };

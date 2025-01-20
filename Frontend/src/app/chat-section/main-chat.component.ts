@@ -9,10 +9,7 @@ import {
 import { CommonModule, NgIf } from '@angular/common';
 import { LlmResponseComponent } from './llm-response/llm-response.component';
 import { UserResponseComponent } from './user-response/user-response.component';
-import { Scroller } from 'primeng/scroller';
-import { ChatState, MessageState } from '../+state/chat-messages/message.state';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import {
   selectLoading,
   selectMessages,
@@ -24,7 +21,6 @@ import { ProgressSpinner } from 'primeng/progressspinner';
     CommonModule,
     LlmResponseComponent,
     UserResponseComponent,
-    Scroller,
     NgIf,
     ProgressSpinner,
   ],

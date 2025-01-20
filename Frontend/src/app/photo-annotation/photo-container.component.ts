@@ -1,7 +1,16 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { Panel } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
+import { Store } from '@ngrx/store';
+import { addImage, clearImage } from '../+state/image/image.action';
+import { ImageState } from '../+state/image/image.state';
 interface Point {
   x: number;
   y: number;
@@ -20,7 +29,7 @@ interface Polygon {
 export class PhotoContainerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-
+  private store = inject(Store);
   public ctx?: CanvasRenderingContext2D;
   public imageUrl: string = '';
   public image?: HTMLImageElement;
@@ -72,6 +81,7 @@ export class PhotoContainerComponent implements OnInit {
 
     this.pushUndoState();
     this.draw();
+    this.getAnnotatedImage();
   }
 
   public draw(): void {
@@ -109,10 +119,27 @@ export class PhotoContainerComponent implements OnInit {
     });
   }
 
-  public getAnnotatedImage(): string | void {
-    return this.canvas?.nativeElement.toDataURL('image/png');
-  }
+  public getAnnotatedImage() {
+    const canvas = this.canvas?.nativeElement as HTMLCanvasElement;
 
+    if (!canvas) {
+      console.error('Canvas element not found');
+      return;
+    }
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const imageFile: File = new File([blob], 'annotated-image.png', {
+          type: 'image/png',
+        });
+
+        // Dispatch the file to the store
+        this.store.dispatch(addImage({ image: { imageFile } }));
+      } else {
+        console.error('Failed to convert canvas to a blob');
+      }
+    }, 'image/png');
+  }
   public undo(): void {
     if (this.undoStack.length > 0) {
       this.pushRedoState(); // Save current state to redoStack
@@ -136,7 +163,7 @@ export class PhotoContainerComponent implements OnInit {
     this.redoStack = [];
     this.image = undefined;
     this.imageUrl = ''; // Clear the image
-
+    this.store.dispatch(clearImage());
     this.clearCanvas();
   }
 
