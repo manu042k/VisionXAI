@@ -1,7 +1,17 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { Panel } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
+import { Store } from '@ngrx/store';
+import { addImage, clearImage } from '../+state/image/image.action';
+import { clearMessages } from '../+state/chat-messages/message.action';
+
 interface Point {
   x: number;
   y: number;
@@ -20,7 +30,7 @@ interface Polygon {
 export class PhotoContainerComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-
+  private store = inject(Store);
   public ctx?: CanvasRenderingContext2D;
   public imageUrl: string = '';
   public image?: HTMLImageElement;
@@ -48,7 +58,6 @@ export class PhotoContainerComponent implements OnInit {
     }
     const target = event.target as HTMLInputElement;
     const file = target?.files?.[0];
-    console.log('fiel', file);
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -60,6 +69,7 @@ export class PhotoContainerComponent implements OnInit {
       reader.readAsDataURL(file);
       target.value = '';
     }
+    this.draw();
   }
 
   public handleCanvasClick(event: MouseEvent): void {
@@ -87,6 +97,7 @@ export class PhotoContainerComponent implements OnInit {
     );
 
     this.polygons.forEach((polygon, index) => this.drawPolygon(polygon, index));
+    this.getAnnotatedImage();
   }
 
   private drawPolygon(polygon: Polygon, index: number): void {
@@ -109,8 +120,12 @@ export class PhotoContainerComponent implements OnInit {
     });
   }
 
-  public getAnnotatedImage(): string | void {
-    return this.canvas?.nativeElement.toDataURL('image/png');
+  public getAnnotatedImage() {
+    this.store.dispatch(
+      addImage({
+        image: this.canvas?.nativeElement.toDataURL('image/jpeg') ?? '',
+      })
+    );
   }
 
   public undo(): void {
@@ -130,13 +145,14 @@ export class PhotoContainerComponent implements OnInit {
   }
 
   public reset(): void {
-    this.pushUndoState(); // Save current state for undo
+    this.pushUndoState();
     this.polygons = [];
     this.undoStack = [];
     this.redoStack = [];
     this.image = undefined;
-    this.imageUrl = ''; // Clear the image
-
+    this.imageUrl = '';
+    this.store.dispatch(clearImage());
+    this.store.dispatch(clearMessages());
     this.clearCanvas();
   }
 

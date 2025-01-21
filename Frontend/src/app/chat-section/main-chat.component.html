@@ -1,6 +1,7 @@
 <ng-container
   *ngIf="{
     messages: messages$ | async,
+    loading: loading$ | async,
   } as cmpObj"
 >
   <div style="flex-grow: 1" class="flex items-center justify-center">
@@ -8,7 +9,7 @@
       #scrollContainer
       class="flex flex-col h-full gap-4 w-full p-3 overflow-y-auto max-h-[65vh]"
       (scroll)="onScroll()"
-      *ngIf="cmpObj.messages; else loadingContainer"
+      *ngIf="cmpObj.messages"
     >
       <ng-container *ngFor="let message of cmpObj.messages">
         <ng-container *ngIf="message.sender === 'LLM'">
