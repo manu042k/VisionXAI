@@ -3,10 +3,18 @@ import { CommonModule, NgIf } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { Fieldset } from 'primeng/fieldset';
 import { Skeleton } from 'primeng/skeleton';
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-llm-response',
-  imports: [CommonModule, AvatarModule, Skeleton, Fieldset, NgIf],
+  imports: [
+    CommonModule,
+    AvatarModule,
+    Skeleton,
+    Fieldset,
+    NgIf,
+    TextareaModule,
+  ],
   templateUrl: './llm-response.component.html',
   styleUrl: './llm-response.component.scss',
 })

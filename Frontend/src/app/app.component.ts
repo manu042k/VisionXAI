@@ -17,6 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { SystemSettingsComponent } from './settings/system-settings.component';
 import { Store } from '@ngrx/store';
 import { showModal } from './+state/api-modal/apiModal.actions';
+import { ToastModule } from 'primeng/toast';
 @Component({
   imports: [
     RouterModule,
@@ -29,6 +30,7 @@ import { showModal } from './+state/api-modal/apiModal.actions';
     ButtonModule,
     SystemSettingsComponent,
     NgIf,
+    ToastModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-root',

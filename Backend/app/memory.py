@@ -44,11 +44,12 @@ class ImageChatBot:
         # Get the response
         response = chain.invoke({"base64_image": base64_image})
         self.messages.append(("assistant", response.content))
+        print(response.content)
         return response.content
 
     def stream_response(self, query, base64_image):
         """Stream the response for the given query and image."""
-        #todo: i plment websockets here
+        #todo: implment websockets here
         prompt = self.create_prompt(query, base64_image)
         chain = prompt | self.model
 

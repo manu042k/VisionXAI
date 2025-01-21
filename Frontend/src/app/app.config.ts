@@ -12,7 +12,7 @@ import {
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import { MyPreset } from 'src/mytheme-2';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
@@ -20,6 +20,8 @@ import { modalReducer } from './+state/api-modal/apiModal.reducer';
 import { chatReducer } from './+state/chat-messages/message.reducers';
 import { BASE_API_URL, configFactory } from './environment';
 import { imageReducer } from './+state/image/image.reducers';
+import { errorHandlerInterceptor } from './interceptors/error-handler.interceptor';
+import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,7 +33,7 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools({ logOnly: !isDevMode() }),
     provideEffects([]),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([errorHandlerInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
     provideAnimationsAsync(),
@@ -44,5 +46,6 @@ export const appConfig: ApplicationConfig = {
       provide: BASE_API_URL,
       useFactory: configFactory, // Dynamically determine the URL
     },
+    MessageService,
   ],
 };

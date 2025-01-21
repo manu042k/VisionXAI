@@ -30,6 +30,6 @@ export const chatReducer = createReducer(
   })),
   on(ChatActions.clearMessages, (state: ChatState) => ({
     ...state,
-    messages: [],
+    messages: [initialMessage],
   }))
 );

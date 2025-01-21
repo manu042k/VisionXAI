@@ -15,12 +15,23 @@ import { LlmService } from 'src/app/services/llm.service';
 import { LLMInput } from 'src/app/constants/llmInput';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { Skeleton } from 'primeng/skeleton';
 @Component({
   selector: 'app-user-input',
-  imports: [CommonModule, TextareaModule, ButtonModule, AutoFocus, FormsModule],
+  imports: [
+    CommonModule,
+    TextareaModule,
+    ButtonModule,
+    AutoFocus,
+    FormsModule,
+    ToastModule,
+    Skeleton,
+  ],
   templateUrl: './user-input.component.html',
   styleUrl: './user-input.component.scss',
+  providers: [MessageService],
 })
 export class UserInputComponent implements OnDestroy {
   public placeholder: string = 'Start typing...';
@@ -31,6 +42,7 @@ export class UserInputComponent implements OnDestroy {
   };
   private store = inject(Store);
   private llmservices = inject(LlmService);
+  private messageService = inject(MessageService);
   private query: LLMInput = {
     query: '',
     base64Image: '',
@@ -58,21 +70,22 @@ export class UserInputComponent implements OnDestroy {
           base64Image: value,
         };
       });
-
     this.llmservices
       .chatWithLLM(this.query)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((response) => {
-        console.log(response);
-        this.store.dispatch(
-          addMessage({
-            message: {
-              content: response.response,
-              sender: MESSAGETYPE.BOT,
-              loading: false,
-            },
-          })
-        );
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          this.store.dispatch(
+            addMessage({
+              message: {
+                content: response.response,
+                sender: MESSAGETYPE.BOT,
+                loading: false,
+              },
+            })
+          );
+        },
       });
     this.userMessage = {
       ...this.userMessage,
