@@ -17,7 +17,6 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { Skeleton } from 'primeng/skeleton';
 @Component({
   selector: 'app-user-input',
   imports: [
@@ -27,7 +26,6 @@ import { Skeleton } from 'primeng/skeleton';
     AutoFocus,
     FormsModule,
     ToastModule,
-    Skeleton,
   ],
   templateUrl: './user-input.component.html',
   styleUrl: './user-input.component.scss',
