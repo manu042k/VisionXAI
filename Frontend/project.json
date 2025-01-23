@@ -28,6 +28,7 @@
                   "node_modules/@pqina/pintura/pintura.css"
       ],
         "scripts": []
+
       },
       "configurations": {
         "production": {
@@ -58,6 +59,9 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "proxyConfig": "proxy.conf.json"
+      },
       "configurations": {
         "production": {
           "buildTarget": "Frontend:build:production"

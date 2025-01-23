@@ -8,11 +8,12 @@ export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      if (error.status) {
+      console.log('error', error);
+      if (error) {
         messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: error.error.detail,
+          detail: error.error.detail || 'An error occurred',
           life: 3000,
         });
       }

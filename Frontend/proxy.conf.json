@@ -1,0 +1,8 @@
+{
+    "/api": {
+        "target": "https://annot-a-kezngymp3-manu042kpaperwork-gmailcoms-projects.vercel.app",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}
