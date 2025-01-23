@@ -20,14 +20,7 @@ app.add_middleware(
 
 # Load environment variables
 load_environment()
-# Add CORSMiddleware to your app
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # Allows specific origins or "*" to allow all
-    allow_credentials=True,  # Allow cookies to be sent
-    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
-)
+
 
 
 
