@@ -10,9 +10,13 @@ import uvicorn
 
 app = FastAPI()
 
-origins = [
-    "*",  
-]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # Angular app's origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Load environment variables
 load_environment()
