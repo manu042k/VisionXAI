@@ -73,7 +73,6 @@ export class UserInputComponent implements OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          console.log(response);
           this.store.dispatch(
             addMessage({
               message: {
