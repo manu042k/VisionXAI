@@ -5,7 +5,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PrimeNG } from 'primeng/config';
 import { MenuItem } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
 import { CommonModule, NgIf } from '@angular/common';
