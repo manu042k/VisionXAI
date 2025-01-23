@@ -60,7 +60,6 @@ export class ChatEffects {
         ofType(ChatActions.stopStreaming),
         tap(() => {
           // Handle stop logic, e.g., closing WebSocket or SSE connection
-          console.log('Stopped streaming.');
         })
       ),
     { dispatch: false }

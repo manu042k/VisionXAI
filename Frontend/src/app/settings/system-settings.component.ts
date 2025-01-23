@@ -31,7 +31,6 @@ export class SystemSettingsComponent {
   }
 
   public onInputChange(event: Event): void {
-    console.log('event', (event.target as HTMLInputElement).value);
     const key = (event.target as HTMLInputElement).value;
     this.apiModalKey = key;
   }

@@ -8,7 +8,6 @@ export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      console.log('error', error);
       if (error) {
         messageService.add({
           severity: 'error',

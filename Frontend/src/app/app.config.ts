@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
       chat: chatReducer,
       image: imageReducer,
     }),
-    provideStoreDevtools({ logOnly: !isDevMode() }),
+    provideStoreDevtools({ logOnly: false }),
     provideEffects([]),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptors([errorHandlerInterceptor])),

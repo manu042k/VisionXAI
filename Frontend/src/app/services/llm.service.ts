@@ -14,7 +14,6 @@ export class LlmService {
 
   constructor() {}
   public chatWithLLM(llmInput: LLMInput): Observable<any> {
-    console.log(this.baseUrl + URLS.CHAT);
     return this.http.post<string>(this.baseUrl + URLS.CHAT, llmInput);
   }
 }
