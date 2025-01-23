@@ -6,6 +6,7 @@ from app.memory import ImageChatBot
 import base64
 from fastapi import FastAPI, File, UploadFile,Form
 from pydantic import BaseModel
+import uvicorn
 
 app = FastAPI()
 
@@ -39,3 +40,5 @@ async def chat(request:ImageRequest):
 
 
 
+if __name__ == "__main__":
+    uvicorn.run("app.main:app", host="0.0.0.0", port=3000, reload=True)
