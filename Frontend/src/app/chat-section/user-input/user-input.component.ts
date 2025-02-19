@@ -8,7 +8,10 @@ import {
   MESSAGETYPE,
 } from 'src/app/+state/chat-messages/message.state';
 import { Store } from '@ngrx/store';
-import { addMessage } from 'src/app/+state/chat-messages/message.action';
+import {
+  addMessage,
+  startStreaming,
+} from 'src/app/+state/chat-messages/message.action';
 import { FormsModule } from '@angular/forms';
 import { selectImage } from 'src/app/+state/image/image.selectors';
 import { LlmService } from 'src/app/services/llm.service';
@@ -17,8 +20,10 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+
 @Component({
   selector: 'app-user-input',
+  standalone: true,
   imports: [
     CommonModule,
     TextareaModule,
@@ -28,7 +33,6 @@ import { ToastModule } from 'primeng/toast';
     ToastModule,
   ],
   templateUrl: './user-input.component.html',
-  styleUrl: './user-input.component.scss',
   providers: [MessageService],
 })
 export class UserInputComponent implements OnDestroy {
@@ -38,16 +42,15 @@ export class UserInputComponent implements OnDestroy {
     sender: MESSAGETYPE.USER,
     loading: false,
   };
+
   private store = inject(Store);
-  private llmservices = inject(LlmService);
+  private llmService = inject(LlmService);
   private messageService = inject(MessageService);
+  private destroy$ = new Subject<void>();
   private query: LLMInput = {
     query: '',
     base64Image: '',
   };
-
-  // Subject to manage unsubscription
-  private destroy$ = new Subject<void>();
 
   public onInputChange(event: Event): void {
     const newContent = (event.target as HTMLInputElement).value.toString();
@@ -57,40 +60,48 @@ export class UserInputComponent implements OnDestroy {
     };
   }
 
-  public onSendMessage(): void {
-    this.store.dispatch(addMessage({ message: this.userMessage }));
-    this.store
-      .select(selectImage)
-      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
-      .subscribe((value) => {
-        this.query = {
-          query: this.userMessage.content,
-          base64Image: value,
-        };
-      });
-    this.llmservices
-      .chatWithLLM(this.query)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.store.dispatch(
-            addMessage({
-              message: {
-                content: response.response,
-                sender: MESSAGETYPE.BOT,
-                loading: false,
-              },
-            })
-          );
-        },
-      });
-    this.userMessage = {
-      ...this.userMessage,
-      content: '',
-    };
+  public async onSendMessage(): Promise<void> {
+    try {
+      if (!this.userMessage.content.trim()) {
+        return;
+      }
+
+      // Dispatch user message to store
+      this.store.dispatch(addMessage({ message: this.userMessage }));
+
+      // Get image from store and start streaming
+      this.store
+        .select(selectImage)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          this.query = {
+            query: this.userMessage.content,
+            base64Image: value,
+          };
+
+          // Dispatch streaming action
+          this.store.dispatch(startStreaming({ query: this.query }));
+        });
+
+      // Clear input after sending
+      this.userMessage = {
+        ...this.userMessage,
+        content: '',
+      };
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
-  // Cleanup the subscription when the component is destroyed
+  private handleError(error: any): void {
+    console.error('Error sending message:', error);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Failed to send message',
+    });
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

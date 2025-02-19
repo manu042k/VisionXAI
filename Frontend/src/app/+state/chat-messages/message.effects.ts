@@ -1,56 +1,51 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import * as ChatActions from './message.action';
 import { ChatState, MESSAGETYPE } from './message.state';
+import { LlmService } from '../../services/llm.service';
 
+@Injectable()
 export class ChatEffects {
-  constructor(
-    private actions$: Actions,
-    private store: Store<ChatState>,
-    private http: HttpClient
-  ) {}
+  private actions$ = inject(Actions);
+  private store = inject(Store<ChatState>);
+  private http = inject(HttpClient);
+  private llmService = inject(LlmService);
 
   startStreaming$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ChatActions.startStreaming),
-      switchMap(() => {
-        // Call your API to start streaming (e.g., WebSocket, SSE)
-        return this.http
-          .get('https://your-api-endpoint.com/stream', {
-            responseType: 'text', // assuming it streams text data
-            observe: 'events',
-            headers: {
-              /* Add any necessary headers */
-            },
+      switchMap(({ query }) => {
+        // Start the streaming and map the responses to actions
+        return this.llmService.streamText$.pipe(
+          map((content) => {
+            console.log('Streamed content:', content);
+            return ChatActions.streamMessage({ content });
+          }),
+          takeUntil(this.actions$.pipe(ofType(ChatActions.streamComplete))),
+          catchError((error) => {
+            console.error('Streaming error:', error);
+            return of(ChatActions.streamComplete());
           })
-          .pipe(
-            map((event: any) => {
-              // Assuming event is a chunk of the response
-              this.store.dispatch(
-                ChatActions.addMessage({
-                  message: {
-                    content: event,
-                    sender: MESSAGETYPE.BOT,
-                    loading: true,
-                  },
-                })
-              );
-              return ChatActions.updateMessageContent({
-                id: 'someId',
-                content: event,
-              });
-            }),
-            catchError((error) => {
-              console.error(error);
-              return of(ChatActions.stopStreaming());
-            })
-          );
+        );
       })
     )
+  );
+
+  // Start the actual streaming process
+  initiateStreaming$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ChatActions.startStreaming),
+        switchMap(({ query }) => {
+          this.llmService.streamChat(query);
+          return [];
+        })
+      ),
+    { dispatch: false }
   );
 
   // Effect to stop streaming

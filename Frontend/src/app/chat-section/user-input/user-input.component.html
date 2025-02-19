@@ -4,6 +4,23 @@
     userMessage: userMessage,
 } as cmpObj"
 >
+  <div>
+    <!-- <textarea
+      class="w-[93%] whitespace-pre-wrap"
+      rows="4"
+      cols="30"
+      readonly
+      pTextarea
+      [pAutoFocus]="true"
+      value="{{ responseText }}"
+    ></textarea> -->
+    <!-- <div
+      id="myTextarea"
+      class="w-[93%] border rounded-md p-2 whitespace-pre-wrap"
+    >
+      {{ responseText }}
+    </div> -->
+  </div>
   <div class="flex flex-row justify-between w-full m-3">
     <!-- Textarea -->
     <textarea
@@ -16,7 +33,6 @@
       (input)="onInputChange($event)"
       value="{{ cmpObj.userMessage.content }}"
     ></textarea>
-
     <!-- Button Wrapper for Center Alignment -->
     <div class="flex items-center justify-center">
       <p-button
