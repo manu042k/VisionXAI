@@ -1,0 +1,10 @@
+requests
+logfire
+devtools
+langchain 
+langchain_community
+langchain_experimental
+langchain_groq
+supabase
+langgraph
+crawl4ai
