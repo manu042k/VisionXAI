@@ -5,12 +5,16 @@ import { LLMInput } from '../constants/llmInput';
 import { Observable, Subject } from 'rxjs';
 import { URLS } from '../constants/url';
 
+interface LLMResponse {
+  response: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class LlmService {
   private http = inject(HttpClient);
-  private baseUrl: string = inject(BASE_API_URL);
+  private apiUrl: string = inject(BASE_API_URL);
 
   // Subject to emit streamed text updates
   private streamTextSubject = new Subject<string>();
@@ -18,13 +22,16 @@ export class LlmService {
 
   constructor() {}
 
-  public chatWithLLM(llmInput: LLMInput): Observable<any> {
-    return this.http.post<string>(this.baseUrl + URLS.CHAT, llmInput);
+  public chatWithLLM(message: LLMInput): Observable<LLMResponse> {
+    return this.http.post<LLMResponse>(`${this.apiUrl}/chat/`, {
+      query: message.query,
+      base64Image: message.base64Image,
+    });
   }
 
   async streamChat(query: LLMInput): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/stream-chat/`, {
+      const response = await fetch(`${this.apiUrl}/stream-chat/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

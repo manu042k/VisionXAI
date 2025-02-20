@@ -14,6 +14,8 @@ import { Store } from '@ngrx/store';
 import * as ImageActions from '../+state/image/image.actions';
 import * as ImageSelectors from '../+state/image/image.selectors';
 import { ImageState } from '../+state/image/image.state';
+import { DividerModule } from 'primeng/divider';
+import * as chatActions from '../+state/chat/chat.actions';
 
 interface Point {
   x: number;
@@ -35,6 +37,7 @@ interface Polygon {
     CardModule,
     ScrollPanelModule,
     TooltipModule,
+    DividerModule,
   ],
   templateUrl: './photo-container.component.html',
   styleUrls: ['./photo-container.component.scss'],
@@ -248,6 +251,7 @@ export class PhotoContainerComponent implements OnInit {
     this.redoStack = [];
     this.image = undefined;
     this.store.dispatch(ImageActions.clearImage());
+    this.store.dispatch(chatActions.clearMessages());
     this.clearCanvas();
   }
 

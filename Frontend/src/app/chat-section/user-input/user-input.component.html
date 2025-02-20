@@ -29,7 +29,7 @@
       <!-- Right side -->
       <button
         (click)="onSendMessage()"
-        [disabled]="!userInput.trim()"
+        [disabled]="!userInput.trim() || !(imageUrl$ | async)"
         class="action-button"
       >
         <i class="pi pi-send text-lg"></i>

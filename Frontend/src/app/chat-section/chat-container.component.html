@@ -1,0 +1,15 @@
+<div class="flex flex-col h-full">
+  <div class="flex justify-end p-2">
+    <button
+      pButton
+      icon="pi pi-trash"
+      label="Reset All"
+      class="p-button-text p-button-danger"
+      (click)="resetAll()"
+    ></button>
+  </div>
+  <app-message-display
+    [messages]="(messages$ | async) || []"
+  ></app-message-display>
+  <app-user-input (sendMessage)="handleNewMessage($event)"></app-user-input>
+</div>

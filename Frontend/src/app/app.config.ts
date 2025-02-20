@@ -20,11 +20,13 @@ import { BASE_API_URL, configFactory } from './environment';
 import { errorHandlerInterceptor } from './interceptors/error-handler.interceptor';
 import { MessageService } from 'primeng/api';
 import { imageReducer } from './+state/image/image.reducer';
+import { chatReducer } from './+state/chat/chat.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStore({
       image: imageReducer,
+      chat: chatReducer,
     }),
     provideStoreDevtools({ logOnly: false }),
     provideEffects([]),

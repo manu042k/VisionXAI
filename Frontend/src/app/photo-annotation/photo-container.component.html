@@ -5,7 +5,7 @@
       <!-- Upload Placeholder -->
       <div
         *ngIf="!image"
-        class="flex flex-col items-center justify-center h-[500px] border-2 border-dashed border-gray-600 rounded-lg bg-[#2D2D2D] hover:bg-[#363636] transition-colors cursor-pointer"
+        class="flex flex-col items-center justify-center h-[500px] border-2 border-dashed border-gray-600 rounded-lg bg-[#1E1E1E] hover:bg-[#363636] transition-colors cursor-pointer"
         (click)="triggerFileInput()"
       >
         <i class="pi pi-cloud-upload text-6xl text-gray-400 mb-4"></i>
@@ -35,8 +35,8 @@
 
     <!-- Tools Card -->
     <p-card class="w-full">
-      <div class="bg-[#2D2D2D] p-3 rounded-lg">
-        <div class="flex flex-wrap gap-3 items-center">
+      <div class="bg-[#1E1E1E] p-3 rounded-lg">
+        <div class="flex flex-wrap gap-3 items-center justify-evenly">
           <!-- Drawing Tools -->
           <div class="flex items-center gap-2">
             <p-button
@@ -46,7 +46,7 @@
               [severity]="imageUrl ? 'success' : 'secondary'"
               (onClick)="toggleDrawing()"
               [disabled]="!image"
-              styleClass="p-button-sm p-button-rounded"
+              styleClass="p-button-sm p-button-rounded text-gray-400"
             ></p-button>
             <p-button
               label="Clear"
@@ -58,6 +58,8 @@
               styleClass="p-button-sm p-button-rounded"
             ></p-button>
           </div>
+          <p-divider layout="vertical" />
+
           <div class="flex items-center gap-2">
             <input
               #fileInput
@@ -91,8 +93,7 @@
               styleClass="p-button-sm p-button-rounded p-button-secondary"
             ></p-button>
           </div>
-
-          <div class="h-6 w-px bg-gray-600"></div>
+          <p-divider layout="vertical" />
 
           <!-- Danger Zone -->
           <p-button

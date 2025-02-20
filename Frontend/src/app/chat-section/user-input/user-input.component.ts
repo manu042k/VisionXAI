@@ -5,9 +5,12 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  inject,
 } from '@angular/core';
+import * as ImageSelectors from '../../+state/image/image.selectors'; // Fix import path
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-user-input',
@@ -17,6 +20,9 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./user-input.component.scss'],
 })
 export class UserInputComponent implements AfterViewInit {
+  private store = inject(Store);
+  public imageUrl$ = this.store.select(ImageSelectors.selectBase64Image);
+
   @Output() sendMessage = new EventEmitter<string>();
   @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 

@@ -14,7 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { SystemSettingsComponent } from './settings/system-settings.component';
 import { Store } from '@ngrx/store';
 import { ToastModule } from 'primeng/toast';
-import { UserInputComponent } from './chat-section/user-input/user-input.component';
+import { ChatContainerComponent } from './chat-section/chat-container.component';
 @Component({
   imports: [
     RouterModule,
@@ -26,7 +26,7 @@ import { UserInputComponent } from './chat-section/user-input/user-input.compone
     SystemSettingsComponent,
     NgIf,
     ToastModule,
-    UserInputComponent,
+    ChatContainerComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-root',
