@@ -28,8 +28,16 @@
             ></p>
           </ng-container>
           <ng-template #loadingTemplate>
-            <div class="space-y-2">
-              <p-skeleton height="1.5rem" width="90%"></p-skeleton>
+            <div>
+              <p
+                class="whitespace-pre-line markdown-content"
+                [innerHTML]="formatMarkdown(message.content)"
+              ></p>
+              <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
             </div>
           </ng-template>
         </div>

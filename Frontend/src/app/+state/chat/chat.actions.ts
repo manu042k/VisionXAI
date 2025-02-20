@@ -8,7 +8,7 @@ export const addMessage = createAction(
 
 export const updateLastMessage = createAction(
   '[Chat] Update Last Message',
-  props<{ content: string }>()
+  props<{ content?: string; loading?: boolean }>()
 );
 
 export const setLoading = createAction(
@@ -21,4 +21,4 @@ export const setError = createAction(
   props<{ error: string }>()
 );
 
-export const clearMessages = createAction('[Chat] Clear Messages'); 
+export const clearMessages = createAction('[Chat] Clear Messages');

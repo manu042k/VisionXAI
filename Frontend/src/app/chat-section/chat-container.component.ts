@@ -34,6 +34,17 @@ export class ChatContainerComponent {
     this.messages$.subscribe((messages) => {
       console.log('Current messages:', messages);
     });
+
+    // Subscribe to stream updates
+    this.llmService.streamText$.subscribe((text) => {
+      // Update the last message with streaming text and keep loading true
+      this.store.dispatch(
+        chatActions.updateLastMessage({
+          content: text,
+          loading: true, // Keep loading indicator while streaming
+        })
+      );
+    });
   }
 
   resetAll() {
@@ -79,29 +90,30 @@ export class ChatContainerComponent {
     );
 
     // Get current image URL value
-    this.imageUrl$.subscribe((imageUrl) => {
+    this.imageUrl$.subscribe(async (imageUrl) => {
       const query: LLMInput = {
         query: message,
         base64Image: imageUrl || '',
       };
 
       if (query.base64Image !== '' && query.query !== '') {
-        this.llmService
-          .chatWithLLM(query)
-          .pipe(
-            catchError((error) => {
-              return of({
-                response: 'Sorry, I encountered an error. Please try again.',
-              });
+        try {
+          // Start streaming
+          await this.llmService.streamChat(query);
+          // Only set loading false when stream completes
+          this.store.dispatch(
+            chatActions.updateLastMessage({
+              loading: false,
             })
-          )
-          .subscribe((response) => {
-            this.store.dispatch(
-              chatActions.updateLastMessage({
-                content: response.response,
-              })
-            );
-          });
+          );
+        } catch (error) {
+          this.store.dispatch(
+            chatActions.updateLastMessage({
+              content: 'Sorry, I encountered an error. Please try again.',
+              loading: false,
+            })
+          );
+        }
       }
     });
   }

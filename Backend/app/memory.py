@@ -9,7 +9,7 @@ from uuid import uuid4
 from typing import AsyncGenerator
 
 class ImageChatBot:
-    def __init__(self, model_name="llama-3.2-11b-vision-preview"):
+    def __init__(self, model_name="llama-3.2-90b-vision-preview"):
         """Initialize the chatbot with environment variables and model."""
         self.model = ChatGroq(model=model_name)
         self.messages = []
@@ -23,7 +23,7 @@ class ImageChatBot:
     def create_prompt(self, query, base64_image):
         """Create a chat prompt template for the image query."""
         messages = [
-            ("user", query),
+            ("user", "Your output should be in html format"+query),
             (
                 "user",
                 [

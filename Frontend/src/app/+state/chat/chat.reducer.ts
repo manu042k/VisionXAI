@@ -8,11 +8,15 @@ export const chatReducer = createReducer(
     ...state,
     messages: [...state.messages, message]
   })),
-  on(ChatActions.updateLastMessage, (state, { content }) => ({
+  on(ChatActions.updateLastMessage, (state, { content, loading }) => ({
     ...state,
     messages: state.messages.map((msg, index) => 
       index === state.messages.length - 1 
-        ? { ...msg, content, loading: false }
+        ? { 
+            ...msg,
+            ...(content !== undefined && { content }),
+            ...(loading !== undefined && { loading })
+          }
         : msg
     )
   })),
