@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stream Image Text</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      #response {
+        white-space: pre-wrap; /* Preserve formatting of streamed text */
+        font-size: 16px;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Stream Image Text from Chatbot</h1>
+
+    <!-- Input for the query and image -->
+    <label for="query">Enter your query:</label>
+    <input
+      type="text"
+      id="query"
+      placeholder="Type your query here"
+      required
+    /><br /><br />
+
+    <label for="base64Image">Enter Base64 Encoded Image:</label>
+    <textarea
+      style="white-space: pre"
+      id="base64Image"
+      placeholder="Paste base64 image string here"
+      rows="5"
+      required
+    ></textarea
+    ><br /><br />
+
+    <button onclick="startStreaming()">Start Streaming</button>
+
+    <div id="response"></div>
+
+    <script>
+      async function startStreaming() {
+        // Get user input values
+        const query = document.getElementById("query").value;
+        const base64Image = document.getElementById("base64Image").value;
+
+        if (!query || !base64Image) {
+          alert("Please fill in both fields!");
+          return;
+        }
+
+        // Clear previous response
+        document.getElementById("response").innerText = "";
+
+        // Create a new ReadableStream to handle the streaming
+        const stream = await fetch("http://localhost:8000/stream-chat/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            query: query,
+            base64Image: base64Image,
+          }),
+        });
+
+        // Create a reader to handle the streaming response
+        const reader = stream.body.getReader();
+        const decoder = new TextDecoder();
+        let done = false;
+        let result;
+
+        // Read the stream and append chunks to the response div
+        while (!done) {
+          result = await reader.read();
+          done = result.done;
+          const chunk = decoder.decode(result.value, { stream: true });
+          document.getElementById("response").innerText += chunk;
+        }
+      }
+    </script>
+  </body>
+</html>

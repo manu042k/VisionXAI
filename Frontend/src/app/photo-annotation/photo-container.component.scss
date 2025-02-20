@@ -1,0 +1,58 @@
+.canvas-container {
+  @apply relative w-full h-[500px];
+  
+  &.drawing-mode {
+    @apply cursor-crosshair;
+  }
+}
+
+.annotation-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.annotation-item {
+  @apply transition-all duration-200;
+  
+  &:hover {
+    @apply bg-gray-50;
+  }
+}
+
+.tool-section, .annotations-section {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+// Custom scrollbar styles for PrimeNG ScrollPanel
+::ng-deep .custombar1 {
+  .p-scrollpanel-wrapper {
+    @apply border-none bg-transparent;
+  }
+  .p-scrollpanel-bar {
+    @apply bg-gray-400 rounded-full;
+  }
+}
+
+::ng-deep {
+  .p-card {
+    @apply bg-[#2D2D2D] border-none shadow-lg;
+    
+    .p-card-content {
+      @apply p-0;
+    }
+  }
+
+  .p-button {
+    &.p-button-sm {
+      @apply text-sm;
+    }
+
+    &.p-button-outlined:not(:disabled) {
+      &:hover {
+        @apply bg-opacity-10 bg-white;
+      }
+    }
+  }
+}

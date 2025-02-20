@@ -3,9 +3,10 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.memory import ConversationBufferMemory
 import os
-from app.config import load_environment
+from config import load_environment
 from dotenv import load_dotenv
 from uuid import uuid4
+from typing import AsyncGenerator
 
 class ImageChatBot:
     def __init__(self, model_name="llama-3.2-11b-vision-preview"):
@@ -47,20 +48,15 @@ class ImageChatBot:
         print(response.content)
         return response.content
 
-    def stream_response(self, query, base64_image):
+    
+    async def stream_response(self, query: str, base64_image: str) -> AsyncGenerator:
         """Stream the response for the given query and image."""
-        #todo: implment websockets here
-        prompt = self.create_prompt(query, base64_image)
-        chain = prompt | self.model
-
-        # Stream the response
-        response_text = ""
-        for chunk in chain.stream({"base64_image": base64_image}):
-            print(chunk.content, end="")
-            response_text += chunk.content
-        self.messages.append(("assistant", response_text))
-        return response_text
-
-
-
-
+        try:
+            prompt = self.create_prompt(query, base64_image)
+            chain = prompt | self.model
+            async for chunk in chain.astream({"base64_image": base64_image}):
+                yield chunk.content
+        except Exception as e:
+            print(f"Error in stream_response: {e}")
+            yield f"Error: {str(e)}"
+    

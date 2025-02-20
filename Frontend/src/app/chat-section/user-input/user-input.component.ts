@@ -1,98 +1,68 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TextareaModule } from 'primeng/textarea';
-import { ButtonModule } from 'primeng/button';
-import { AutoFocus } from 'primeng/autofocus';
 import {
-  MessageState,
-  MESSAGETYPE,
-} from 'src/app/+state/chat-messages/message.state';
-import { Store } from '@ngrx/store';
-import { addMessage } from 'src/app/+state/chat-messages/message.action';
+  Component,
+  EventEmitter,
+  Output,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { selectImage } from 'src/app/+state/image/image.selectors';
-import { LlmService } from 'src/app/services/llm.service';
-import { LLMInput } from 'src/app/constants/llmInput';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+
 @Component({
   selector: 'app-user-input',
-  imports: [
-    CommonModule,
-    TextareaModule,
-    ButtonModule,
-    AutoFocus,
-    FormsModule,
-    ToastModule,
-  ],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './user-input.component.html',
-  styleUrl: './user-input.component.scss',
-  providers: [MessageService],
+  styleUrls: ['./user-input.component.scss'],
 })
-export class UserInputComponent implements OnDestroy {
-  public placeholder: string = 'Start typing...';
-  public userMessage: MessageState = {
-    content: '',
-    sender: MESSAGETYPE.USER,
-    loading: false,
-  };
-  private store = inject(Store);
-  private llmservices = inject(LlmService);
-  private messageService = inject(MessageService);
-  private query: LLMInput = {
-    query: '',
-    base64Image: '',
-  };
+export class UserInputComponent implements AfterViewInit {
+  @Output() sendMessage = new EventEmitter<string>();
+  @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 
-  // Subject to manage unsubscription
-  private destroy$ = new Subject<void>();
+  public userInput = '';
 
-  public onInputChange(event: Event): void {
-    const newContent = (event.target as HTMLInputElement).value.toString();
-    this.userMessage = {
-      ...this.userMessage,
-      content: newContent,
-    };
+  ngAfterViewInit() {
+    this.adjustTextareaHeight();
   }
 
-  public onSendMessage(): void {
-    this.store.dispatch(addMessage({ message: this.userMessage }));
-    this.store
-      .select(selectImage)
-      .pipe(takeUntil(this.destroy$)) // Automatically unsubscribe on destroy
-      .subscribe((value) => {
-        this.query = {
-          query: this.userMessage.content,
-          base64Image: value,
-        };
-      });
-    this.llmservices
-      .chatWithLLM(this.query)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.store.dispatch(
-            addMessage({
-              message: {
-                content: response.response,
-                sender: MESSAGETYPE.BOT,
-                loading: false,
-              },
-            })
-          );
-        },
-      });
-    this.userMessage = {
-      ...this.userMessage,
-      content: '',
-    };
+  onInput(): void {
+    this.adjustTextareaHeight();
   }
 
-  // Cleanup the subscription when the component is destroyed
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  private adjustTextareaHeight(): void {
+    const textarea = this.messageInput.nativeElement;
+    const lineHeight = 24; // 1.5rem = 24px
+    const maxHeight = lineHeight * 5; // 5 lines
+
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = 'auto';
+
+    // Set new height based on content
+    const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+    textarea.style.height = `${newHeight}px`;
+
+    // Add/remove scrollbar class based on content height
+    if (textarea.scrollHeight > maxHeight) {
+      textarea.classList.add('scrollbar-custom');
+    } else {
+      textarea.classList.remove('scrollbar-custom');
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.onSendMessage();
+    }
+  }
+
+  onSendMessage(): void {
+    const message = this.userInput.trim();
+    if (!message) return;
+
+    this.sendMessage.emit(message);
+    this.userInput = '';
+    this.adjustTextareaHeight();
   }
 }

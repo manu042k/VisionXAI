@@ -1,29 +1,39 @@
-<ng-container
-  *ngIf="{
-    placeholder: placeholder,
-    userMessage: userMessage,
-} as cmpObj"
->
-  <div class="flex flex-row justify-between w-full m-3">
-    <!-- Textarea -->
-    <textarea
-      class="w-[93%] border rounded-md p-2"
-      rows="4"
-      cols="30"
-      pTextarea
-      [pAutoFocus]="true"
-      placeholder="{{ cmpObj.placeholder }}"
-      (input)="onInputChange($event)"
-      value="{{ cmpObj.userMessage.content }}"
-    ></textarea>
+<div class="relative w-full p-4">
+  <div class="input-container">
+    <!-- Top Section with Textarea -->
+    <div class="flex-1 p-3">
+      <textarea
+        #messageInput
+        [(ngModel)]="userInput"
+        (input)="onInput()"
+        (keydown)="onKeyDown($event)"
+        rows="1"
+        placeholder="Ask anything..."
+      ></textarea>
+    </div>
 
-    <!-- Button Wrapper for Center Alignment -->
-    <div class="flex items-center justify-center">
-      <p-button
+    <!-- Bottom Section with Buttons -->
+    <div class="bottom-section">
+      <!-- Left side -->
+      <div class="flex items-center gap-2">
+        <button class="language-button">
+          <i class="pi pi-language text-lg"></i>
+          <span>Auto</span>
+          <i class="pi pi-chevron-down text-sm"></i>
+        </button>
+        <button class="action-button">
+          <i class="pi pi-spin pi-globe text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Right side -->
+      <button
         (click)="onSendMessage()"
-        icon="pi pi-check"
-        [disabled]="cmpObj.userMessage.content === ''"
-      ></p-button>
+        [disabled]="!userInput.trim()"
+        class="action-button"
+      >
+        <i class="pi pi-send text-lg"></i>
+      </button>
     </div>
   </div>
-</ng-container>
+</div>
