@@ -4,8 +4,8 @@ import { chatReducer } from './+state/chat-messages/message.reducer';
 @NgModule({
   imports: [
     // ... other imports
-    StoreModule.forRoot({ chat: chatReducer })
+    StoreModule.forRoot({ chat: chatReducer }),
   ],
   // ... rest of the module config
 })
-export class AppModule { } 
+export class AppModule {}

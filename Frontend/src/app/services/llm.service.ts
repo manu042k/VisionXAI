@@ -4,10 +4,7 @@ import { BASE_API_URL } from '../environment';
 import { LLMInput } from '../constants/llmInput';
 import { Observable, Subject } from 'rxjs';
 import { URLS } from '../constants/url';
-
-interface LLMResponse {
-  response: string;
-}
+import { LLMResponse } from '../constants/LLMResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +20,7 @@ export class LlmService {
   constructor() {}
 
   public chatWithLLM(message: LLMInput): Observable<LLMResponse> {
-    return this.http.post<LLMResponse>(`${this.apiUrl}/chat/`, {
+    return this.http.post<LLMResponse>(this.apiUrl + URLS.CHAT, {
       query: message.query,
       base64Image: message.base64Image,
     });
@@ -31,7 +28,7 @@ export class LlmService {
 
   async streamChat(query: LLMInput): Promise<void> {
     try {
-      const response = await fetch(`${this.apiUrl}/stream-chat/`, {
+      const response = await fetch(this.apiUrl + URLS.STREAM_CHAT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +69,6 @@ export class LlmService {
   }
 
   formatStreamedText(text: string): string {
-    // Add any text formatting logic here if needed
     return text;
   }
 }

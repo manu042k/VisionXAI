@@ -15,6 +15,7 @@ import { SystemSettingsComponent } from './settings/system-settings.component';
 import { Store } from '@ngrx/store';
 import { ToastModule } from 'primeng/toast';
 import { ChatContainerComponent } from './chat-section/chat-container.component';
+import { AppLogoComponent } from './shared/components/app-logo/app-logo.component';
 @Component({
   imports: [
     RouterModule,
@@ -27,6 +28,7 @@ import { ChatContainerComponent } from './chat-section/chat-container.component'
     NgIf,
     ToastModule,
     ChatContainerComponent,
+    AppLogoComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-root',

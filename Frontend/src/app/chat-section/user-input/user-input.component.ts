@@ -11,6 +11,7 @@ import * as ImageSelectors from '../../+state/image/image.selectors'; // Fix imp
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-input',
@@ -57,9 +58,17 @@ export class UserInputComponent implements AfterViewInit {
   }
 
   onKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      this.onSendMessage();
+    if (
+      event.key === 'Enter' &&
+      !event.shiftKey &&
+      this.userInput.trim() !== ''
+    ) {
+      this.imageUrl$.pipe(take(1)).subscribe((imageUrl) => {
+        if (imageUrl) {
+          event.preventDefault();
+          this.onSendMessage();
+        }
+      });
     }
   }
 
