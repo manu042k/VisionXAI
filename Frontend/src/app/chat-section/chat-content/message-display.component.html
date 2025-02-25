@@ -1,0 +1,76 @@
+<div
+  #messageContainer
+  class="flex flex-col flex-1 overflow-y-auto p-4 space-y-4"
+  (scroll)="onScroll()"
+>
+  <ng-container *ngFor="let message of messages; let i = index">
+    <!-- User Message -->
+    <div *ngIf="message.sender === 'USER'" class="flex justify-end">
+      <div class="flex flex-col items-end gap-1">
+        <div class="message user-message">
+          <p class="whitespace-pre-wrap">{{ message.content }}</p>
+        </div>
+        <span class="text-xs text-gray-500">{{
+          formatTime(message.timestamp)
+        }}</span>
+      </div>
+    </div>
+
+    <!-- Bot Message -->
+    <div *ngIf="message.sender === 'BOT'" class="flex justify-start gap-1">
+      <app-logo size="sm"></app-logo>
+      <div class="flex flex-col items-start gap-1 w-full">
+        <div class="message bot-message">
+          <ng-container *ngIf="!message.loading; else loadingTemplate">
+            <p
+              class="whitespace-pre-line markdown-content"
+              [innerHTML]="formatMarkdown(message.content)"
+            ></p>
+          </ng-container>
+          <ng-template #loadingTemplate>
+            <div>
+              <p
+                class="whitespace-pre-line markdown-content"
+                [innerHTML]="formatMarkdown(message.content)"
+              ></p>
+              <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <span class="text-xs text-gray-500">{{
+          formatTime(message.timestamp)
+        }}</span>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="messages.length === 0"
+    class="flex-1 flex flex-col items-center justify-center gap-6"
+  >
+    <app-logo size="lg"></app-logo>
+    <div class="space-y-2 text-center">
+      <h1 class="text-2xl font-semibold text-gray-200">Welcome to VisionXai</h1>
+      <p class="text-gray-400">Your AI assistant for computer vision tasks</p>
+    </div>
+    <div class="flex flex-col items-center gap-3 text-gray-500">
+      <p class="text-lg">Ask me anything about:</p>
+      <div class="flex flex-wrap justify-center gap-2">
+        <span class="px-3 py-1 rounded-full bg-sky-600/10 text-sky-400"
+          >Image Analysis</span
+        >
+        <span class="px-3 py-1 rounded-full bg-sky-600/10 text-sky-400"
+          >Object Detection</span
+        >
+        <span class="px-3 py-1 rounded-full bg-sky-600/10 text-sky-400"
+          >Image Annotation</span
+        >
+      </div>
+    </div>
+  </div>
+</div>

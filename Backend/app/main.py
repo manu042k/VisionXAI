@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.models import ImageRequest
-from app.config import load_environment
-from app.memory import ImageChatBot
+from fastapi.responses import StreamingResponse
+from models import ImageRequest
+from config import load_environment
+from memory import ImageChatBot
 import base64
 from fastapi import FastAPI, File, UploadFile,Form
 from pydantic import BaseModel
@@ -11,16 +12,18 @@ import uvicorn
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],  # Or ["*"]
+    allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 # Load environment variables
 load_environment()
 
-
-
+@app.get("/")
+async def root():
+    """Root endpoint to verify API is running."""
+    return {"message": "Welcome to the Image Chat API"}
 
 @app.post("/chat/")
 async def chat(request:ImageRequest):
@@ -33,7 +36,15 @@ async def chat(request:ImageRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
+@app.post("/stream-chat/")
+async def stream_chat(request:ImageRequest):
+    """Stream chat response with image and query."""
+    try:
+        chat = ImageChatBot()
+        return StreamingResponse(chat.stream_response(request.query,request.base64Image), media_type="text/plain")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
 
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=3000, reload=True)
+# if __name__ == "__main__":
+#     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 

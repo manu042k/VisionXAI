@@ -1,89 +1,112 @@
-<ng-container>
-  <div class="flex flex-col gap-4 m-8">
-    <!-- Panel for Image Editor -->
-    <p-panel
-      [style]="{ height: '35rem', border: '1px dashed #FFFF' }"
-      class="relative overflow-hidden"
-    >
-      <!-- Placeholder Icon for Empty Canvas -->
-      <div class="relative w-full h-full" *ngIf="!image">
-        <i
-          class="pi pi-upload absolute top-10 w-full h-full opacity-30"
-          style="font-size: 20rem; left: 10rem"
-        ></i>
+<div class="container mx-auto p-4">
+  <div class="flex flex-col">
+    <!-- Image Editor Card -->
+    <p-card class="w-full min-h-[500px] relative">
+      <!-- Upload Placeholder -->
+      <div
+        *ngIf="!image"
+        class="flex flex-col items-center justify-center h-[500px] border-2 border-dashed border-gray-600 rounded-lg bg-[#1E1E1E] hover:bg-[#363636] transition-colors cursor-pointer"
+        (click)="triggerFileInput()"
+      >
+        <i class="pi pi-cloud-upload text-6xl text-gray-400 mb-4"></i>
+        <p class="text-gray-300">Drop your image here or click to upload</p>
+        <p class="text-gray-500 text-sm mt-2">
+          Supports: JPG, PNG, GIF, BMP, WEBP, SVG
+        </p>
       </div>
-      <!-- Canvas for Drawing -->
-      <canvas
-        #canvas
-        class="absolute"
-        width="620"
-        height="480"
-        (click)="handleCanvasClick($event)"
-      ></canvas>
-    </p-panel>
 
-    <!-- Action Buttons -->
-    <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-      <!-- Upload Image -->
-      <p-button
-        label="Upload"
-        variant="outlined"
-        icon="pi pi-upload"
-        size="small"
-        severity="success"
-        (onClick)="triggerFileInput()"
-      ></p-button>
-      <input
-        #fileInput
-        type="file"
-        accept="image/jpeg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/HEIC"
-        (change)="uploadImage($event)"
-        style="display: none"
-      />
+      <!-- Canvas Container -->
+      <div
+        [ngClass]="{
+          'canvas-container': true,
+          'drawing-mode': isDrawingEnabled,
+          hidden: !image
+        }"
+      >
+        <canvas
+          #canvas
+          class="absolute inset-0"
+          width="620"
+          height="480"
+          (click)="handleCanvasClick($event)"
+        ></canvas>
+      </div>
+    </p-card>
 
-      <!-- Toggle Drawing -->
-      <p-button
-        variant="outlined"
-        icon="pi pi-pencil"
-        size="small"
-        [severity]="!image ? 'contrast' : 'info'"
-        (onClick)="toggleDrawing()"
-        [label]="isDrawingEnabled ? 'Stop Drawing' : 'Start Drawing'"
-        [disabled]="!image"
-      ></p-button>
+    <!-- Tools Card -->
+    <p-card class="w-full">
+      <div class="bg-[#1E1E1E] p-3 rounded-lg">
+        <div class="flex flex-wrap gap-3 items-center justify-evenly">
+          <!-- Drawing Tools -->
+          <div class="flex items-center gap-2">
+            <p-button
+              [label]="isDrawingEnabled ? 'Drawing' : 'Draw'"
+              icon="pi pi-pencil"
+              [outlined]="true"
+              [severity]="imageUrl ? 'success' : 'secondary'"
+              (onClick)="toggleDrawing()"
+              [disabled]="!image"
+              styleClass="p-button-sm p-button-rounded text-gray-400"
+            ></p-button>
+            <p-button
+              label="Clear"
+              icon="pi pi-times"
+              [severity]="imageUrl ? 'danger' : 'secondary'"
+              [outlined]="true"
+              [disabled]="!polygons.length"
+              (onClick)="deleteAllPolygons()"
+              styleClass="p-button-sm p-button-rounded"
+            ></p-button>
+          </div>
+          <p-divider layout="vertical" />
 
-      <!-- Undo Action -->
-      <p-button
-        variant="outlined"
-        icon="pi pi-undo"
-        size="small"
-        [severity]="undoStack.length === 0 ? 'contrast' : 'help'"
-        (onClick)="undo()"
-        label="Undo"
-        [disabled]="undoStack.length === 0 && !this.polygons.length"
-      ></p-button>
+          <div class="flex items-center gap-2">
+            <input
+              #fileInput
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/bmp,image/webp,image/svg+xml,image/HEIC"
+              (change)="uploadImage($event)"
+              class="hidden"
+            />
+            <p-button
+              label="Upload"
+              icon="pi pi-upload"
+              severity="info"
+              [outlined]="true"
+              (onClick)="triggerFileInput()"
+              styleClass="p-button-sm p-button-rounded"
+            ></p-button>
+            <p-button
+              label="Undo"
+              icon="pi pi-undo"
+              [outlined]="true"
+              [disabled]="undoStack.length === 0"
+              (onClick)="undo()"
+              styleClass="p-button-sm p-button-rounded p-button-secondary"
+            ></p-button>
+            <p-button
+              label="Redo"
+              icon="pi pi-refresh"
+              [outlined]="true"
+              [disabled]="redoStack.length === 0"
+              (onClick)="redo()"
+              styleClass="p-button-sm p-button-rounded p-button-secondary"
+            ></p-button>
+          </div>
+          <p-divider layout="vertical" />
 
-      <!-- Redo Action -->
-      <p-button
-        variant="outlined"
-        icon="pi pi-refresh"
-        size="small"
-        [severity]="redoStack.length === 0 ? 'contrast' : 'help'"
-        (onClick)="redo()"
-        label="Redo"
-        [disabled]="redoStack.length === 0"
-      ></p-button>
-
-      <!-- Reset Canvas -->
-      <p-button
-        variant="outlined"
-        icon="pi  pi-times"
-        size="small"
-        [severity]="image ? 'danger' : 'contrast'"
-        (onClick)="reset()"
-        label="Reset"
-        [disabled]="!image"
-      ></p-button>
-    </div>
+          <!-- Danger Zone -->
+          <p-button
+            label="Reset"
+            icon="pi pi-trash"
+            [severity]="imageUrl ? 'danger' : 'secondary'"
+            [outlined]="true"
+            [disabled]="!image"
+            (onClick)="reset()"
+            styleClass="p-button-sm p-button-rounded"
+          ></p-button>
+        </div>
+      </div>
+    </p-card>
   </div>
-</ng-container>
+</div>

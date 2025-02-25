@@ -1,8 +1,8 @@
 <ng-container *ngIf="{} as cmpObj" class="h-screen">
   <p-menubar [model]="items">
     <ng-template #start>
-      <img src="logo.svg" alt="" class="w-7 h-7 bg-white" />
-      <span class="ml-2 text-xl font-bold text-white-800">AnnotAIx</span>
+      <app-logo></app-logo>
+      <span class="ml-3 text-xl font-bold text-white-800">VisionXai</span>
     </ng-template>
 
     <ng-template #end>
@@ -16,8 +16,8 @@
 
   <p-splitter
     [style]="{ height: '90vh' }"
-    [panelSizes]="[50, 50]"
-    [minSizes]="[40, 40]"
+    [panelSizes]="[52, 48]"
+    [minSizes]="[52, 48]"
     styleClass="mb-8"
   >
     <ng-template pTemplate>
@@ -26,10 +26,7 @@
     <ng-template pTemplate>
       <p-splitter layout="vertical" [panelSizes]="[80, 20]">
         <ng-template pTemplate>
-          <app-main-chat class="w-full"></app-main-chat>
-        </ng-template>
-        <ng-template pTemplate>
-          <app-user-input class="w-[95%]"></app-user-input>
+          <app-chat-container class="w-[95%]"></app-chat-container>
         </ng-template>
       </p-splitter>
     </ng-template>

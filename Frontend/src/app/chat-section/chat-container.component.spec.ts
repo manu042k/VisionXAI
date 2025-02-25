@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LlmResponseComponent } from './llm-response.component';
+import { ChatContainerComponent } from './chat-container.component';
 
-describe('LlmResponseComponent', () => {
-  let component: LlmResponseComponent;
-  let fixture: ComponentFixture<LlmResponseComponent>;
+describe('ChatContainerComponent', () => {
+  let component: ChatContainerComponent;
+  let fixture: ComponentFixture<ChatContainerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LlmResponseComponent],
+      imports: [ChatContainerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LlmResponseComponent);
+    fixture = TestBed.createComponent(ChatContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

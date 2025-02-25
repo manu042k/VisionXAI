@@ -16,19 +16,17 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { modalReducer } from './+state/api-modal/apiModal.reducer';
-import { chatReducer } from './+state/chat-messages/message.reducers';
 import { BASE_API_URL, configFactory } from './environment';
-import { imageReducer } from './+state/image/image.reducers';
 import { errorHandlerInterceptor } from './interceptors/error-handler.interceptor';
 import { MessageService } from 'primeng/api';
+import { imageReducer } from './+state/image/image.reducer';
+import { chatReducer } from './+state/chat/chat.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStore({
-      modal: modalReducer,
-      chat: chatReducer,
       image: imageReducer,
+      chat: chatReducer,
     }),
     provideStoreDevtools({ logOnly: false }),
     provideEffects([]),

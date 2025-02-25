@@ -45,13 +45,12 @@ def build_graph() -> Any:
     tools = [search_tool, crawl_webpages]
 
     # Initialize LLM and bind tools
-    llm = ChatGroq(model="llama-3.1-8b-instant")
+    llm = ChatGroq(model="llama-3.3-70b-versatile")
     llm_with_tools = llm.bind_tools(tools)
 
     def chatbot(state: State) -> State:
         """Invoke the LLM with the given state messages."""
         message = llm_with_tools.invoke(state["messages"])
-        print(message)
         # Assuming at most one tool_call is expected.
         # assert len(message.tool_calls) <= 1 # type: ignore
         return {"messages": [message]}
