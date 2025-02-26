@@ -35,7 +35,7 @@ export class MessageDisplayComponent implements OnChanges, AfterViewChecked {
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('Messages changed:', this.messages);
+    // console.log('Messages changed:', this.messages);
     this.isAtBottom = true;
   }
 
