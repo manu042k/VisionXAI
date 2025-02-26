@@ -3,7 +3,6 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from typing import AsyncGenerator
 from langchain.prompts import PromptTemplate
-from services import OptimizationEngine
 from groq import Groq
 
 class ImageChatBot:

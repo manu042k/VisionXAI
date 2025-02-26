@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from models import ImageRequest
-from config import load_environment
-from memory import ImageChatBot
+from app.models import ImageRequest
+from app.config import load_environment
+from app.memory import ImageChatBot
 import base64
 from fastapi import FastAPI, File, UploadFile,Form
 from pydantic import BaseModel
