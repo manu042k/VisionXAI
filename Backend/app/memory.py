@@ -45,8 +45,6 @@ class ImageChatBot:
 
     async def stream_response(self, query: str, base64_image: str) -> AsyncGenerator:
         """Stream the response for the given query and image."""
-        engine = OptimizationEngine() 
-        refined_query = engine.optimize_user_query(query)
         try:
             prompt = self.create_prompt(query, base64_image)
             chain = prompt | self.vision_model
