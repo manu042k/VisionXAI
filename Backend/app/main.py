@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from models import ImageRequest
-from config import load_environment
-from memory import ImageChatBot
+from app.models import ImageRequest
+from app.config import load_environment
+from app.memory import ImageChatBot
 import base64
 from fastapi import FastAPI, File, UploadFile,Form
 from pydantic import BaseModel
@@ -43,9 +43,9 @@ async def stream_chat(request:ImageRequest):
         chat = ImageChatBot()
         return StreamingResponse(chat.stream_response(request.query,request.base64Image), media_type="text/plain")
     except Exception as e:
-        pri
+        
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
+# if __name__ == "__main__":
+#     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
