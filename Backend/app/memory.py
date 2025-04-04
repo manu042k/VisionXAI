@@ -216,7 +216,6 @@ For example, if a user asks 'What breed of dog is this?', you should examine the
         search_results = []
         if self._should_search(query, base64_image):
             search_results = self._search(query, base64_image)
-
         try:
             prompt = self.create_prompt(query, base64_image, search_results=search_results)
             chain = prompt | self.vision_model

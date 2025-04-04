@@ -31,9 +31,8 @@ export class ChatContainerComponent {
 
   constructor() {
     // Debug: Subscribe to messages to verify updates
-    this.messages$.subscribe((messages) => {
-      console.log('Current messages:', messages);
-    });
+    // this.messages$.subscribe((messages) => {
+    // });
 
     // Subscribe to stream updates
     this.llmService.streamText$.subscribe((text) => {
@@ -65,7 +64,7 @@ export class ChatContainerComponent {
       return;
     }
 
-    console.log('Handling new message:', message);
+    // console.log('Handling new message:', message);
     // Add user message
     this.store.dispatch(
       chatActions.addMessage({
