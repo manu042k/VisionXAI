@@ -7,3 +7,5 @@ def load_environment():
     os.environ["LANGSMITH_TRACING"] = "false"
     os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
     os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
+    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+    os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")

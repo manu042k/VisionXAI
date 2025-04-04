@@ -43,6 +43,7 @@ async def stream_chat(request:ImageRequest):
         chat = ImageChatBot()
         return StreamingResponse(chat.stream_response(request.query,request.base64Image), media_type="text/plain")
     except Exception as e:
+        
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
 

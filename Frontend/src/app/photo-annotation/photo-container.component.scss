@@ -1,58 +1,110 @@
-.canvas-container {
-  @apply relative w-full h-[500px];
-  
-  &.drawing-mode {
-    @apply cursor-crosshair;
+:host {
+  display: block; // Ensures component takes block layout space
+}
+
+.container {
+  max-width: 1200px; // Or your preferred max width
+  // Height is determined by content flow or parent constraints
+}
+
+// Styling for the card containing the image annotator
+.image-annotator-card {
+  display: flex;          // Use flexbox for internal layout
+  flex-direction: column; // Stack header, content, footer vertically
+  overflow: hidden;       // Prevent content like large headers/footers from overflowing
+
+  // Target PrimeNG's internal structure carefully
+  // Use ::ng-deep sparingly or configure ViewEncapsulation if preferred
+  ::ng-deep .p-card-body {
+    padding: 0;       // Remove default body padding
+    flex-grow: 1;     // Allow body to grow and fill available space
+    display: flex;    // Use flex for content area alignment
+    flex-direction: column; // Ensure content flows vertically within the body
+  }
+  ::ng-deep .p-card-content {
+    padding: 0.5rem;    // Add small padding around the display area, or 0 if preferred
+    flex-grow: 1;     // Allow content area to fill the body
+    display: flex;    // Use flex to manage content inside (the image-display-area)
+    justify-content: center;
+    align-items: center;
+    height: 100%;       // Ensure content takes full height of the p-card-body
   }
 }
 
-.annotation-list {
-  max-height: 200px;
-  overflow-y: auto;
+// The area that defines the maximum visible space for the image/canvas
+// It provides the scroll boundaries.
+.image-display-area {
+  width: 100%;
+  height: 100%;         // Take full height of its parent (.p-card-content)
+  max-height: 80vh;     // Default maximum height is 80% of the viewport height
+  // min-height: 300px; // Optional: Ensure a minimum space
+  overflow: auto;       // Add scrollbars (horizontal/vertical) if the content (canvas) overflows these bounds
+  display: flex;        // Center the canvas-wrapper within this scrollable area
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1); // Subtle background for the image area
+  border-radius: 4px;   // Slight rounding
+  position: relative;   // Good practice for positioning context
 }
 
-.annotation-item {
-  @apply transition-all duration-200;
-  
-  &:hover {
-    @apply bg-gray-50;
+// Styling for the upload placeholder within the display area
+.upload-placeholder {
+  // Ensure placeholder takes appropriate space
+  width: 95%; // Slightly smaller than container
+  height: 95%; // Relative to .image-display-area
+  min-height: 250px; // Ensure it's reasonably large
+  // Inherit flex alignment from parent or redefine if needed
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Wrapper directly around the canvas element
+.canvas-wrapper {
+  display: inline-block; // Size naturally around the scaled canvas
+  max-width: 100%;       // Don't exceed the image-display-area width
+  max-height: 100%;      // Don't exceed the image-display-area height
+  line-height: 0;        // Prevent extra vertical space
+  position: relative;    // For potential overlays later
+}
+
+// The actual canvas element
+canvas {
+  display: block;        // Use block display for better sizing control
+  // These CSS rules visually scale the element down to fit the wrapper, maintaining aspect ratio
+  max-width: 100%;
+  max-height: 100%;
+  // Width/height 'auto' let the browser determine the correct scaled dimensions based on constraints and aspect ratio
+  width: auto;
+  height: auto;
+  // Optional: Improves rendering of pixel art or sharp edges when scaled, can look blocky otherwise
+  // image-rendering: pixelated;
+  // image-rendering: crisp-edges;
+}
+
+// Styling for the card containing the tool buttons
+.tools-card {
+  flex-shrink: 0; // Prevent this card from shrinking if vertical space is tight
+
+  ::ng-deep .p-card-content {
+      padding: 0.5rem; // Add some padding inside the tools card content area
   }
 }
 
-.tool-section, .annotations-section {
-  background: #f8f9fa;
-  padding: 1rem;
-  border-radius: 4px;
+// Optional styling for the polygon list card
+.polygon-list-card {
+   flex-shrink: 0;
+   max-height: 200px; // Example max height (can be adjusted to vh if needed, e.g., max-height: 30vh;)
+   overflow-y: auto;
+
+   ::ng-deep .p-card-content {
+      padding: 0.5rem;
+   }
 }
 
-// Custom scrollbar styles for PrimeNG ScrollPanel
-::ng-deep .custombar1 {
-  .p-scrollpanel-wrapper {
-    @apply border-none bg-transparent;
-  }
-  .p-scrollpanel-bar {
-    @apply bg-gray-400 rounded-full;
-  }
-}
 
-::ng-deep {
-  .p-card {
-    @apply bg-[#2D2D2D] border-none shadow-lg;
-    
-    .p-card-content {
-      @apply p-0;
-    }
-  }
-
-  .p-button {
-    &.p-button-sm {
-      @apply text-sm;
-    }
-
-    &.p-button-outlined:not(:disabled) {
-      &:hover {
-        @apply bg-opacity-10 bg-white;
-      }
-    }
-  }
+// Utility to hide the default file input element
+.hidden {
+  display: none;
 }
