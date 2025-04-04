@@ -19,12 +19,14 @@ VisionXAI is a comprehensive project that integrates machine learning models wit
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/yourusername/VisionXAI.git
    cd VisionXAI
    ```
 
 2. **Install Frontend Dependencies**:
+
    ```bash
    cd Frontend
    npm install
@@ -39,6 +41,7 @@ VisionXAI is a comprehensive project that integrates machine learning models wit
 ### Running the Project
 
 - **Frontend**: Navigate to the `Frontend` directory and run:
+
   ```bash
   npm start
   ```
@@ -51,6 +54,7 @@ VisionXAI is a comprehensive project that integrates machine learning models wit
 ### Testing
 
 - **Frontend**: Use Jest for running tests.
+
   ```bash
   npm test
   ```
@@ -72,4 +76,4 @@ The `ImageChatBot` class, located in `Backend/app/memory.py`, is an intelligent 
 
 The chatbot can encode images to base64, decide if a search is needed, and generate responses with or without search results. It supports both synchronous and asynchronous response streaming.
 
-
+![](image.png)
