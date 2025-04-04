@@ -43,8 +43,9 @@ async def stream_chat(request:ImageRequest):
         chat = ImageChatBot()
         return StreamingResponse(chat.stream_response(request.query,request.base64Image), media_type="text/plain")
     except Exception as e:
+        print(f"Error in stream_chat: {e}")
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
 
-# if __name__ == "__main__":
-#     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 

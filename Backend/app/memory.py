@@ -1,17 +1,28 @@
 import base64
-from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from typing import AsyncGenerator
 from langchain.prompts import PromptTemplate
-from services import OptimizationEngine
-from groq import Groq
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 class ImageChatBot:
-    def __init__(self, model_name="llama-3.2-90b-vision-preview", temperature=0.5):
+    def __init__(self, model_name="gemini-2.0-flash-001", temperature=0.5):
         """Initialize the chatbot with environment variables and model."""
-        self.vision_model  = ChatGroq(model=model_name, temperature=temperature)
-        self.text_model = ChatGroq(model="llama-3.1-8b-instant", temperature=temperature)
+        self.vision_model = ChatGoogleGenerativeAI(
+        model=model_name,
+        temperature=temperature,
+        max_retries=2,
+    )
+        self.system_prompt = """You are an expert in visual understanding. Your primary role is to analyze images and answer user questions based on their content. Pay close attention to details within the image to provide accurate and informative responses.
+        Addinationlly, check for any bouding box answer the question based on the bounding box with respect to content of entire image.
+        When responding:
+        - Be descriptive about the visual elements present in the image.
+        - Answer the user's question directly and concisely.
+        - If the answer is not directly discernible from the image, state that you cannot provide a definitive answer based on the visual information.
+        - Avoid making assumptions or bringing in outside knowledge unless it is directly relevant and obvious from the image.
+        - Maintain a helpful and objective tone.
+        - return format should be in markdown format.
 
+        For example, if a user asks 'What color is the car?', you should examine the image and respond with the color you see. If the car is not clearly visible, you should say something like 'The color of the car is not clearly visible in this image.'"""
 
     def encode_image(self, image_path):
         """Encode an image to a base64 string."""
@@ -19,8 +30,9 @@ class ImageChatBot:
             return base64.b64encode(image_file.read()).decode("utf-8")
 
     def create_prompt(self, query, base64_image):
-        """Create a chat prompt template for the image query."""
+        """Create a chat prompt template for the image query with a system prompt."""
         messages = [
+            ("system", self.system_prompt),
             ("user",  query),
             (
                 "user",
@@ -46,8 +58,6 @@ class ImageChatBot:
 
     async def stream_response(self, query: str, base64_image: str) -> AsyncGenerator:
         """Stream the response for the given query and image."""
-        engine = OptimizationEngine() 
-        refined_query = engine.optimize_user_query(query)
         try:
             prompt = self.create_prompt(query, base64_image)
             chain = prompt | self.vision_model
@@ -58,22 +68,3 @@ class ImageChatBot:
             print(f"Error in stream_response: {e}")
             yield f"Error: {str(e)}"
 
-
-#yield """<div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg shadow-md max-w-max">
-#     <!-- Logo Image with Reduced Size -->
-#     <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" alt="OpenAI Logo" class="w-6 h-6 rounded-full border-2 border-sky-500">
-    
-#     <!-- Link with Hover, Focus, and Transition Effects -->
-#     <a href="https://www.wikipedia.org" 
-#        class="text-gray-700 hover:text-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-600 transition duration-300 text-lg font-semibold"
-#        target="_blank" 
-#        rel="noopener noreferrer">
-#         Visit Wikipedia
-#     </a>
-    
-#     <!-- Spinning Google Icon -->
-#     <i class="pi pi-spin pi-google text-2xl text-sky-600"></i>
-# </div>
-
-
-# """ 
