@@ -76,4 +76,16 @@ The `ImageChatBot` class, located in `Backend/app/memory.py`, is an intelligent 
 
 The chatbot can encode images to base64, decide if a search is needed, and generate responses with or without search results. It supports both synchronous and asynchronous response streaming.
 
-![](image.png)
+## Visual Demonstrations
+
+### Application Interface
+
+<img src="image.png" alt="Application Interface" width="600">
+
+The above image showcases the user interface of VisionXAI, highlighting its intuitive design and seamless integration of AI functionalities.
+
+### Workflow in Action
+
+<img src="Demo.gif" alt="Workflow Demonstration" width="600">
+
+This GIF demonstrates the end-to-end workflow of VisionXAI, from uploading an image to receiving AI-powered insights and responses. It provides a glimpse into the real-time capabilities of the platform.
