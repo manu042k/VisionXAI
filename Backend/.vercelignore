@@ -1,0 +1,16 @@
+# Exclude virtualenv and caches from Vercel uploads
+env/
+env/**
+__pycache__/
+**/*.pyc
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+tests/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.DS_Store

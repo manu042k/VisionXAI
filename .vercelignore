@@ -1,0 +1,11 @@
+# Exclude local virtualenvs and caches from Vercel uploads
+Backend/env/
+Backend/env/**
+Backend/__pycache__/
+Backend/**/*.pyc
+**/__pycache__/
+**/*.pyc
+.env
+.venv/
+node_modules/
+.DS_Store
