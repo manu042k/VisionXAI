@@ -1,43 +1,43 @@
 # Core FastAPI dependencies
-fastapi==0.115.6
-uvicorn==0.34.0
-python-multipart==0.0.20
-starlette==0.41.3
+fastapi
+uvicorn
+python-multipart
+starlette
 
 # Pydantic for data validation
-pydantic==2.10.5
-pydantic_core==2.27.2
-pydantic-settings==2.8.0
+pydantic
+pydantic_core
+pydantic-settings
 
 # Environment variables
-python-dotenv==1.0.1
+python-dotenv
 
 # LangChain for AI/LLM functionality
-langchain-core==0.3.50
-langchain-google-genai==2.1.2
-langchain-community==0.3.18
+langchain-core
+langchain-google-genai
+langchain-community
 
 # Google AI dependencies
-google-generativeai>=0.3.0
-google-ai-generativelanguage>=0.4.0
+google-generativeai
+google-ai-generativelanguage
 
 # HTTP clients (required by langchain)
-httpx==0.27.2
-requests==2.32.3
+httpx
+requests
 
 # Async support
-anyio==4.8.0
-sniffio==1.3.1
+anyio
+sniffio
 
 # JSON and data handling
-orjson==3.10.15
+orjson
 
 # Typing extensions
-typing_extensions==4.12.2
-annotated-types==0.7.0
+typing_extensions
+annotated-types
 
 # Additional langchain dependencies
-tenacity==9.0.0
-jsonpatch==1.33
-PyYAML==6.0.2
-packaging==24.2
+tenacity
+jsonpatch
+PyYAML
+packaging
