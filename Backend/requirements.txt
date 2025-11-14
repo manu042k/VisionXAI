@@ -17,6 +17,12 @@ langchain-core
 langchain-google-genai
 langchain-community
 
+# LangGraph for workflow orchestration
+langgraph
+
+# Web crawling
+crawl4ai
+
 # Google AI dependencies
 google-generativeai
 google-ai-generativelanguage
