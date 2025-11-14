@@ -5,12 +5,12 @@
       <div class="image-display-area">
         <div
           *ngIf="!hasImage"
-          class="upload-placeholder flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-600 rounded-lg bg-[#1E1E1E] hover:bg-[#363636] transition-colors cursor-pointer p-5"
+          class="upload-placeholder flex flex-col items-center justify-center h-full border-2 border-dashed rounded-lg transition-colors cursor-pointer p-5"
           (click)="triggerFileInput()"
         >
-          <i class="pi pi-cloud-upload text-6xl text-gray-400 mb-4"></i>
-          <p class="text-gray-300">Drop your image here or click to upload</p>
-          <p class="text-gray-500 text-sm mt-2">
+          <i class="pi pi-cloud-upload text-6xl upload-icon mb-4"></i>
+          <p class="upload-text">Drop your image here or click to upload</p>
+          <p class="upload-hint text-sm mt-2">
             Supports common image formats (JPG, PNG, etc.)
           </p>
         </div>
@@ -31,7 +31,7 @@
   <p-card class="w-full tools-card">
     <ng-template pTemplate="header"> Tools </ng-template>
     <ng-template pTemplate="content">
-      <div class="bg-[#1E1E1E] p-3 rounded-lg">
+      <div class="tools-container p-3 rounded-lg">
         <div
           class="flex flex-wrap gap-x-4 gap-y-2 items-center justify-start md:justify-between"
         >

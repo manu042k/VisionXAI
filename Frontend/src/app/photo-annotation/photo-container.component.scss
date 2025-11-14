@@ -58,6 +58,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: var(--p-content-background);
+  border-color: var(--p-content-border-color);
+
+  &:hover {
+    background-color: var(--p-content-hover-background);
+  }
+
+  .upload-icon {
+    color: var(--p-text-muted-color);
+  }
+
+  .upload-text {
+    color: var(--p-text-color);
+  }
+
+  .upload-hint {
+    color: var(--p-text-muted-color);
+  }
 }
 
 // Wrapper directly around the canvas element
@@ -89,6 +107,10 @@ canvas {
 
   ::ng-deep .p-card-content {
       padding: 0.5rem; // Add some padding inside the tools card content area
+  }
+
+  .tools-container {
+    background-color: var(--p-content-background);
   }
 }
 

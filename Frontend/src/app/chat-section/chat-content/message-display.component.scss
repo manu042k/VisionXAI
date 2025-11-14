@@ -5,11 +5,14 @@
       @apply px-6 py-3 rounded-2xl break-words min-w-[200px];
   
       &.user-message {
-        @apply bg-[#2D2D2D] text-white max-w-[95%] w-fit;
+        background-color: var(--p-primary-color);
+        color: var(--p-primary-contrast-color);
+        @apply max-w-[95%] w-fit;
       }
   
       &.bot-message {
-        @apply text-gray-200 w-full;
+        color: var(--p-text-color);
+        @apply w-full;
       }
     }
   
@@ -18,7 +21,8 @@
       @apply flex gap-1 mt-2;
       
       span {
-        @apply w-2 h-2 bg-gray-400 rounded-full;
+        @apply w-2 h-2 rounded-full;
+        background-color: var(--p-text-muted-color);
         animation: bounce 1.4s infinite ease-in-out;
   
         &:nth-child(1) { animation-delay: -0.32s; }
@@ -30,7 +34,31 @@
       @apply leading-relaxed;
       
       strong {
-        @apply font-semibold text-white;
+        @apply font-semibold;
+        color: var(--p-text-color);
+      }
+    }
+
+    .timestamp {
+      color: var(--p-text-muted-color);
+    }
+
+    .empty-state {
+      .welcome-title {
+        color: var(--p-text-color);
+      }
+
+      .welcome-subtitle {
+        color: var(--p-text-muted-color);
+      }
+
+      .features-section {
+        color: var(--p-text-muted-color);
+      }
+
+      .feature-tag {
+        background-color: rgba(14, 165, 233, 0.1); // sky-500 with 10% opacity
+        color: #0ea5e9; // sky-500
       }
     }
   }
@@ -54,9 +82,10 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-600 rounded-full;
+    @apply rounded-full;
+    background-color: var(--p-surface-400);
   
     &:hover {
-      @apply bg-gray-500;
+      background-color: var(--p-surface-500);
     }
   } 

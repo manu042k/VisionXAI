@@ -1,36 +1,57 @@
 :host {
   .input-container {
-    @apply flex flex-col w-full rounded-2xl border border-gray-700 bg-[#1E1E1E] shadow-lg;
+    @apply flex flex-col w-full rounded-2xl shadow-lg;
+    background-color: var(--p-content-background);
+    border: 1px solid var(--p-content-border-color);
   }
 
   textarea {
     min-height: 24px;
     line-height: 1.5;
-    @apply w-full bg-transparent text-gray-200 outline-none resize-none placeholder:text-gray-500 overflow-y-auto;
+    @apply w-full bg-transparent outline-none resize-none overflow-y-auto;
+    color: var(--p-text-color);
+    
+    &::placeholder {
+      color: var(--p-text-muted-color);
+    }
   }
 
   .bottom-section {
-    @apply flex items-center justify-between px-3 py-2 border-t border-gray-700;
+    @apply flex items-center justify-between px-3 py-2 border-t;
+    border-color: var(--p-content-border-color);
   }
 
   .language-button {
-    @apply flex items-center gap-2 text-gray-400 hover:text-sky-600 transition-colors;
+    @apply flex items-center gap-2 transition-colors;
+    color: var(--p-text-muted-color);
+    
+    &:hover {
+      color: var(--p-primary-color);
+    }
   }
 
   .action-button {
-    @apply p-2 text-gray-400 hover:text-sky-600 rounded-full transition-colors;
-
+    @apply p-2 rounded-full transition-colors;
+    color: var(--p-text-muted-color);
+    
     &:hover:not(:disabled) {
-      @apply bg-sky-600/10;
+      color: var(--p-primary-color);
+      background-color: var(--p-primary-50);
     }
 
     &:disabled {
-      @apply opacity-40 cursor-not-allowed hover:text-gray-400;
+      @apply opacity-40 cursor-not-allowed;
     }
   }
 
   .send-button {
-    @apply p-3 bg-[#2D2D2D] hover:bg-[#363636] disabled:opacity-50 text-gray-200 rounded-full transition-colors;
+    @apply p-3 disabled:opacity-50 rounded-full transition-colors;
+    background-color: var(--p-surface-200);
+    color: var(--p-text-color);
+    
+    &:hover:not(:disabled) {
+      background-color: var(--p-surface-300);
+    }
   }
 
   // Custom Scrollbar
@@ -44,10 +65,11 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      @apply bg-gray-600 rounded-full;
+      @apply rounded-full;
+      background-color: var(--p-surface-400);
 
       &:hover {
-        @apply bg-gray-500;
+        background-color: var(--p-surface-500);
       }
     }
   }
