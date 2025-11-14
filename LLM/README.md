@@ -1,89 +1,98 @@
 # LLM Image Analysis System
 
-A powerful and modular image analysis system using Google's Gemini model with LangGraph for workflow orchestration and Tavily for web search capabilities.
+A sophisticated and modular image analysis system built with Google's Gemini 2.5 Flash model, LangGraph for stateful workflow orchestration, and Tavily for intelligent web search capabilities. This module serves as the core AI processing engine for AnnotAIx.
 
 ## Features
 
-- 🖼️ **Image Analysis**: Process and analyze images using Google's Gemini 2.0 Flash model
-- 🔍 **Web Search Integration**: Automatically search the web for additional context when needed
-- 🔄 **Smart Routing**: Intelligent query analysis to determine if web search is required
-- 📊 **LangGraph Workflow**: State-based workflow management with conditional routing
-- 🛠️ **Extensible Tools**: Modular tool system for easy expansion
-- 🏗️ **Clean Architecture**: Organized codebase with separation of concerns
-- 🔌 **Multiple Implementations**: Choose between basic and enhanced graph workflows
+- **Advanced Image Analysis**: Process and analyze images using Google's Gemini 2.5 Flash model with vision capabilities
+- **Web Search Integration**: Automatically search the web for additional context when needed using Tavily API
+- **Smart Routing**: Intelligent query analysis to determine if web search is required
+- **LangGraph Workflow**: State-based workflow management with conditional routing and memory persistence
+- **Bounding Box Detection**: Identify and analyze specific objects and regions within images
+- **Conversation Memory**: Maintain context across multiple interactions with the same image
+- **Extensible Tools**: Modular tool system for easy expansion and customization
+- **Clean Architecture**: Organized codebase with clear separation of concerns
+- **Multiple Use Cases**: Support for description, Q&A, search-enhanced analysis, and more
 
 ## Project Structure
 
 ```
 LLM/
-├── LLM.py                      # Original implementation (unchanged)
-├── gemini_langgraph.py         # Legacy basic implementation
-├── gemini_langgraph_enhanced.py # Legacy enhanced implementation
-├── studio_graph.py             # LangGraph Studio integration
+├── studio_graph.py             # LangGraph Studio integration and visualization
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # This file
 │
 ├── core/                       # Core functionality
 │   ├── __init__.py
-│   ├── states.py              # TypedDict state definitions
-│   └── utils.py               # Utility functions
+│   ├── states.py              # TypedDict state definitions for workflow
+│   └── utils.py               # Utility functions and helpers
 │
-├── tools/                      # External tools
+├── tools/                      # External tool integrations
 │   ├── __init__.py
-│   └── web_search.py          # Tavily web search tool
+│   └── web_search.py          # Tavily web search implementation
 │
-├── graphs/                     # LangGraph implementations
+├── graphs/                     # LangGraph workflow implementations
 │   ├── __init__.py
-│   ├── basic_graph.py         # Basic image analysis workflow
-│   └── enhanced_graph.py      # Enhanced workflow (WIP)
+│   └── image_analyzer.py      # Advanced image analysis workflow
 │
-├── config/                     # Configuration
+├── config/                     # Configuration management
 │   └── __init__.py
 │
-├── examples/                   # Usage examples
-│   ├── README.md
-│   ├── basic_usage.py
-│   ├── test.jpeg              # Sample test image
-│   └── test.ipynb             # Jupyter notebook examples
+├── examples/                   # Usage examples and documentation
+│   ├── README.md              # Example documentation
+│   ├── run_analyzer.py        # Standalone analysis script
+│   └── test.jpeg              # Sample test image
 │
-└── tests/                      # Unit tests (future)
+└── tests/                      # Unit tests (future implementation)
 ```
 
 ## Architecture
 
-### Basic Graph Workflow
+### ImageAnalyzer Workflow
 
-The basic implementation uses a LangGraph workflow with these nodes:
+The ImageAnalyzer implements an advanced LangGraph workflow with the following nodes:
 
-1. **encode_image**: Converts image to base64 format
-2. **analyze_query**: Determines if web search is needed based on query keywords
-3. **search** (optional): Performs web search using Tavily API
-4. **generate_description**: Generates image description with Gemini, optionally using search context
+1. **load_memory_and_encode**: Loads conversation history and validates base64 image data
+2. **analyze_initial_query**: Examines the user's question to understand intent and context
+3. **detect_bounding_boxes**: Identifies objects and regions of interest within the image
+4. **decide_search**: Determines if web search is needed based on query analysis
+5. **search_web**: Performs contextual web search using Tavily API (conditional)
+6. **generate_final_summary**: Generates comprehensive response with all available context
+7. **save_memory**: Persists conversation history for future interactions
 
-### Enhanced Graph Workflow (Legacy)
+### Advanced Features
 
-The enhanced implementation adds:
+The implementation includes sophisticated capabilities:
 
-- Conversation memory across sessions
-- Bounding box detection and analysis
-- Context-aware search decisions
-- Comprehensive response formatting with citations
+- **Conversation Memory**: Maintains multi-turn conversation context using MemorySaver
+- **Bounding Box Detection**: Identifies and analyzes specific objects and regions
+- **Context-Aware Search**: Intelligently decides when external information is needed
+- **Comprehensive Summarization**: Generates detailed responses with proper citations
+- **Error Recovery**: Graceful handling of failures at each workflow stage
+- **Streaming Support**: Real-time response generation for better user experience
 
 ## Prerequisites
 
-- Python 3.8+
-- Google API Key (for Gemini)
-- Tavily API Key (for web search)
+- Python 3.8 or higher
+- Google API Key for Gemini models
+- Tavily API Key for web search functionality
+- pip package manager
 
 ## Installation
 
-1. Install dependencies:
+1. Navigate to the LLM directory:
+
+```bash
+cd LLM
+```
+
+2. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Create a `.env` file in the LLM directory:
+3. Create a `.env` file in the LLM directory:
 
 ```env
 GOOGLE_API_KEY=your_google_api_key_here
@@ -106,186 +115,242 @@ TAVILY_API_KEY=your_tavily_api_key_here
 
 ## Usage
 
-### Basic Usage (New Clean Architecture)
+### Basic Usage
 
 ```python
-from graphs.basic_graph import GeminiImageDescriber
+from graphs.image_analyzer import ImageAnalyzer
 
-# Initialize the describer
-describer = GeminiImageDescriber()
-
-# Simple image description (no search)
-result = describer.describe_image(
-    image_path="examples/test.jpeg",
-    query="Describe this image in detail.",
-    use_search=False
+# Initialize the analyzer with memory enabled
+analyzer = ImageAnalyzer(
+    model_name="gemini-2.5-flash",
+    temperature=0.7,
+    enable_memory=True
 )
 
-print(result['description'])
+# Prepare the initial state
+initial_state = {
+    "query": "What objects can you identify in this image?",
+    "base64_image": "your_base64_encoded_image_data",
+    "thread_id": "user_session_123"
+}
+
+# Run the analysis
+final_state = analyzer.run(initial_state)
+
+# Access the results
+print(final_state["final_summary"])
 ```
 
-### With Automatic Search Detection
+### With File Path
 
 ```python
-# The system will automatically detect if search is needed
-result = describer.describe_image(
-    image_path="examples/test.jpeg",
-    query="What is the latest information about this product?"
-)
+import base64
+from graphs.image_analyzer import ImageAnalyzer
+
+# Read and encode image
+with open("examples/test.jpeg", "rb") as image_file:
+    base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+
+analyzer = ImageAnalyzer()
+
+initial_state = {
+    "query": "Describe this image in detail",
+    "base64_image": base64_image,
+    "thread_id": "session_001"
+}
+
+result = analyzer.run(initial_state)
+print(result["final_summary"])
 ```
 
-### Force Search
+### Search-Enhanced Analysis
 
 ```python
-# Force web search for additional context
-result = describer.describe_image(
-    image_path="examples/test.jpeg",
-    query="Tell me about the brand shown in this image",
-    use_search=True
-)
+# The system automatically detects if search is needed
+# based on query keywords and context
+
+initial_state = {
+    "query": "What is the latest information about this product?",
+    "base64_image": base64_image,
+    "thread_id": "session_002"
+}
+
+result = analyzer.run(initial_state)
+# Result will include web search context if needed
 ```
 
-### Using Legacy Implementation
+### Multi-Turn Conversation
 
 ```python
-# For backwards compatibility, you can still use:
-from gemini_langgraph import GeminiImageDescriber
+# First query
+state1 = {
+    "query": "What do you see in this image?",
+    "base64_image": base64_image,
+    "thread_id": "conversation_123"
+}
+result1 = analyzer.run(state1)
 
-describer = GeminiImageDescriber()
-result = describer.describe_image("path/to/image.jpg", "Your query")
+# Follow-up query with same thread_id maintains context
+state2 = {
+    "query": "Can you tell me more about the object on the left?",
+    "base64_image": base64_image,
+    "thread_id": "conversation_123"
+}
+result2 = analyzer.run(state2)
 ```
 
 ### Running Examples
 
 ```bash
 cd examples
-python basic_usage.py
+python run_analyzer.py
 ```
 
 ## How It Works
 
 ### Query Analysis
 
-The system looks for keywords that indicate external information is needed:
+The system performs intelligent query analysis to determine if web search is needed:
 
-- "search", "find", "look up"
-- "what is", "who is", "when was", "where is"
-- "latest", "current", "news"
+**Search Trigger Keywords:**
 
-If detected, it performs a web search before generating the description.
+- Informational: "search", "find", "look up", "tell me about"
+- Question words: "what is", "who is", "when was", "where is", "why", "how"
+- Temporal: "latest", "current", "recent", "news", "today"
+- Factual: "information about", "details on", "facts about"
+
+### Bounding Box Detection
+
+The analyzer can identify and locate objects within images:
+
+1. Gemini model detects objects and regions of interest
+2. Returns bounding box coordinates for each identified object
+3. Provides labels and confidence scores
+4. Used for targeted analysis of specific image areas
 
 ### Search Integration
 
 When search is triggered:
 
-1. Tavily API searches for the query
-2. Top 3 results are retrieved
-3. Results are formatted and added to the context
-4. Gemini generates a description using both image and search context
+1. Query is reformulated based on image content
+2. Tavily API performs contextual web search
+3. Top 3-5 results are retrieved and formatted
+4. Results include titles, URLs, and relevant snippets
+5. Gemini generates final response incorporating search context
+6. Citations are added for all external sources
 
-### Workflow States
+### Workflow State
 
-Each state in the workflow contains:
+The ImageAnalyzerState TypedDict contains:
 
-- `image_path`: Path to the input image
-- `base64_image`: Encoded image data
 - `query`: User's question or instruction
-- `description`: Generated description
-- `search_results`: Web search results (if applicable)
-- `next_action`: Next step in the workflow
-- `error`: Error message (if any)
+- `base64_image`: Base64-encoded image data
+- `thread_id`: Conversation thread identifier
+- `conversation_history`: Previous messages in the thread
+- `image_metadata`: Image size and encoding information
+- `bounding_boxes`: Detected objects with coordinates
+- `search_needed`: Boolean flag for search requirement
+- `search_results`: Formatted web search results
+- `final_summary`: Generated comprehensive response
+- `error`: Error message if any operation failed
+
+### Memory Persistence
+
+Conversation history is maintained using LangGraph's MemorySaver:
+
+- Each thread_id has independent conversation history
+- Previous queries and responses are loaded at the start
+- New interactions are appended to history
+- Memory is preserved across multiple invocations
+- Enables context-aware follow-up questions
 
 ## Examples
 
 ### Example 1: Basic Image Description
 
 ```python
-describer = GeminiImageDescriber()
-result = describer.describe_image(
-    image_path="photo.jpg",
-    query="What do you see in this image?"
-)
+from graphs.image_analyzer import ImageAnalyzer
+import base64
+
+analyzer = ImageAnalyzer()
+
+with open("photo.jpg", "rb") as f:
+    base64_image = base64.b64encode(f.read()).decode('utf-8')
+
+state = {
+    "query": "What do you see in this image?",
+    "base64_image": base64_image,
+    "thread_id": "basic_example"
+}
+
+result = analyzer.run(state)
+print(result["final_summary"])
 ```
 
 ### Example 2: Product Information with Search
 
 ```python
-result = describer.describe_image(
-    image_path="product.jpg",
-    query="Search and tell me about this product's features and reviews"
-)
+state = {
+    "query": "Search and tell me about this product's features and reviews",
+    "base64_image": base64_image,
+    "thread_id": "product_search"
+}
+
+result = analyzer.run(state)
+print(result["final_summary"])
+print(f"Search performed: {result['search_needed']}")
 ```
 
-### Example 3: Historical Context
+### Example 3: Object Detection
 
 ```python
-result = describer.describe_image(
-    image_path="landmark.jpg",
-    query="What is this building and what is its historical significance?"
-)
+state = {
+    "query": "Identify all objects in this image with their locations",
+    "base64_image": base64_image,
+    "thread_id": "object_detection"
+}
+
+result = analyzer.run(state)
+print("Detected objects:")
+for bbox in result.get("bounding_boxes", []):
+    print(f"  - {bbox['label']}: {bbox['coordinates']}")
 ```
 
-## Extending with More Tools
-
-To add more tools, follow this pattern:
+### Example 4: Conversational Analysis
 
 ```python
-from langchain_core.tools import tool
+# First interaction
+state1 = {
+    "query": "What is the main subject of this image?",
+    "base64_image": base64_image,
+    "thread_id": "conversation_example"
+}
+result1 = analyzer.run(state1)
 
-@tool
-def your_custom_tool(param: str) -> str:
-    """
-    Description of what your tool does.
-
-    Args:
-        param: Parameter description
-
-    Returns:
-        Result description
-    """
-    # Your tool implementation
-    return result
-
-# Add to the GeminiImageDescriber class
-self.tools = [search_web, your_custom_tool]
+# Follow-up question
+state2 = {
+    "query": "What colors are dominant?",
+    "base64_image": base64_image,
+    "thread_id": "conversation_example"  # Same thread_id
+}
+result2 = analyzer.run(state2)
 ```
-
-## Error Handling
-
-The system includes comprehensive error handling:
-
-- Image encoding errors
-- API failures
-- Search errors
-- Model invocation errors
-
-All errors are captured in the state and returned in the result.
 
 ## Dependencies
 
-- **langgraph**: Workflow orchestration
+### Core Framework
+
+- **langgraph**: Stateful workflow orchestration with conditional routing
+- **langchain-core**: LangChain framework core components
 - **langchain-google-genai**: Google Gemini model integration
-- **tavily-python**: Web search API
-- **python-dotenv**: Environment variable management
+- **langchain-community**: Community-contributed LangChain components
 
-## Troubleshooting
+### AI Models
 
-### "GOOGLE_API_KEY not found"
+- **google-generativeai**: Google AI SDK for Gemini models
+- **google-ai-generativelanguage**: Google AI language generation
 
-Make sure you have a `.env` file with your Google API key.
+### Tools and Utilities
 
-### "TAVILY_API_KEY not found"
-
-Add your Tavily API key to the `.env` file. Search functionality requires this.
-
-### Import errors
-
-Run `pip install -r requirements.txt` to install all dependencies.
-
-## License
-
-MIT License
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
+- **tavily-python**: Web search API client
+- **python-dotenv**: Environment variable management from .env files

@@ -5,8 +5,8 @@
       @apply px-6 py-3 rounded-2xl break-words min-w-[200px];
   
       &.user-message {
-        background-color: var(--p-primary-color);
-        color: var(--p-primary-contrast-color);
+        background-color: var(--p-surface-800);
+        color: var(--p-text-color);
         @apply max-w-[95%] w-fit;
       }
   
