@@ -20,6 +20,10 @@ langchain-community
 # LangGraph for workflow orchestration
 langgraph
 
+# Web crawling (NOTE: requires system dependencies - may need custom startup script for Azure)
+# crawl4ai
+# playwright
+
 # Google AI dependencies
 google-generativeai
 google-ai-generativelanguage
