@@ -1,0 +1,10 @@
+# LangGraph and LangChain dependencies
+langgraph>=0.2.0
+langchain-google-genai>=2.0.0
+langchain-core>=0.3.0
+
+# Search tool
+tavily-python>=0.5.0
+
+# Utilities
+python-dotenv>=1.0.0
