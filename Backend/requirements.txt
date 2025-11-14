@@ -32,6 +32,9 @@ google-ai-generativelanguage
 httpx
 requests
 
+# Tavily search client
+tavily-python
+
 # Async support
 anyio
 sniffio
