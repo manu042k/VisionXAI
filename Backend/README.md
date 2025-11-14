@@ -1,6 +1,6 @@
 # Backend
 
-The Backend directory contains the FastAPI-based REST API service that powers AnnotAIx. It serves as the bridge between the frontend application and the LangGraph-based image analysis pipeline, handling image processing, workflow orchestration, and response streaming.
+The Backend directory contains the FastAPI-based REST API service that powers VisionXai. It serves as the bridge between the frontend application and the LangGraph-based image analysis pipeline, handling image processing, workflow orchestration, and response streaming.
 
 ## Architecture Overview
 

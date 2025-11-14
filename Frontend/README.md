@@ -1,6 +1,6 @@
 # Frontend
 
-The Frontend directory contains the Angular-based web application that serves as the user interface for AnnotAIx. Built with modern web technologies and managed through Nx monorepo tooling, it provides an intuitive, responsive platform for AI-powered image analysis and interactive Q&A.
+The Frontend directory contains the Angular-based web application that serves as the user interface for VisionXai. Built with modern web technologies and managed through Nx monorepo tooling, it provides an intuitive, responsive platform for AI-powered image analysis and interactive Q&A.
 
 ## Architecture Overview
 

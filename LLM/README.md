@@ -1,6 +1,6 @@
 # LLM Image Analysis System
 
-A sophisticated and modular image analysis system built with Google's Gemini 2.5 Flash model, LangGraph for stateful workflow orchestration, and Tavily for intelligent web search capabilities. This module serves as the core AI processing engine for AnnotAIx.
+A sophisticated and modular image analysis system built with Google's Gemini 2.5 Flash model, LangGraph for stateful workflow orchestration, and Tavily for intelligent web search capabilities. This module serves as the core AI processing engine for VisionXai.
 
 ## Features
 

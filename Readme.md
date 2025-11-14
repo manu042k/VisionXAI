@@ -1,10 +1,10 @@
-# AnnotAIx
+# VisionXai
 
-AnnotAIx is an advanced AI-powered image analysis platform that combines Google's Gemini models with intelligent web search capabilities to provide comprehensive visual content understanding and interactive Q&A functionality.
+VisionXai is an advanced AI-powered image analysis platform that combines Google's Gemini models with intelligent web search capabilities to provide comprehensive visual content understanding and interactive Q&A functionality.
 
 ## Project Overview
 
-AnnotAIx integrates cutting-edge machine learning models with a modern web application architecture, featuring a responsive Angular frontend, a robust FastAPI backend, and an advanced LangGraph-based LLM processing pipeline. The system enables users to upload images and receive detailed AI-generated analysis, enhanced with real-time web search when additional context is needed.
+VisionXai integrates cutting-edge machine learning models with a modern web application architecture, featuring a responsive Angular frontend, a robust FastAPI backend, and an advanced LangGraph-based LLM processing pipeline. The system enables users to upload images and receive detailed AI-generated analysis, enhanced with real-time web search when additional context is needed.
 
 ## Project Structure
 
@@ -52,8 +52,8 @@ FastAPI-based REST API service:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/manu042k/AnnotAIx.git
-   cd AnnotAIx
+   git clone https://github.com/manu042k/VisionXai.git
+   cd VisionXai
    ```
 
 2. Set up environment variables:
