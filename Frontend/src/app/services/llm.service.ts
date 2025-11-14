@@ -19,10 +19,15 @@ export class LlmService {
 
   constructor() {}
 
+  private generateThreadId(): string {
+    return `thread_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  }
+
   public chatWithLLM(message: LLMInput): Observable<LLMResponse> {
     return this.http.post<LLMResponse>(this.apiUrl + URLS.CHAT, {
       query: message.query,
       base64Image: message.base64Image,
+      threadId: message.threadId || this.generateThreadId(),
     });
   }
 
@@ -32,11 +37,12 @@ export class LlmService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
+          Accept: 'text/event-stream',
         },
         body: JSON.stringify({
           query: query.query,
           base64Image: query.base64Image,
+          threadId: query.threadId || this.generateThreadId(),
         }),
       });
 
@@ -50,7 +56,7 @@ export class LlmService {
       }
 
       const decoder = new TextDecoder();
-      let accumulatedText = '';
+      let buffer = '';
 
       while (true) {
         const { value, done } = await reader.read();
@@ -58,8 +64,29 @@ export class LlmService {
 
         if (value) {
           const chunk = decoder.decode(value, { stream: true });
-          accumulatedText += chunk;
-          this.streamTextSubject.next(accumulatedText);
+          buffer += chunk;
+
+          // Process complete SSE messages (ending with \n\n)
+          const messages = buffer.split('\n\n');
+          buffer = messages.pop() || ''; // Keep incomplete message in buffer
+
+          for (const message of messages) {
+            if (message.startsWith('data: ')) {
+              const jsonStr = message.substring(6); // Remove 'data: ' prefix
+              try {
+                const data = JSON.parse(jsonStr);
+                if (data.response) {
+                  // Emit the actual response content
+                  this.streamTextSubject.next(data.response);
+                } else if (data.error) {
+                  console.error('Stream error:', data.error);
+                  throw new Error(data.error);
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE message:', parseError);
+              }
+            }
+          }
         }
       }
     } catch (error) {
